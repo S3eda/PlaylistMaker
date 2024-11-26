@@ -7,7 +7,9 @@
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 
-    <style name="SwitchTheme" parent="Theme.AppCompat">
+    <style name="switch_style" parent="Theme.AppCompat">
         <item name="colorControlActivated">@color/thumbOn</item>
+        <item name="colorControlNormal">@color/thumbOff</item>
     </style>
+
 </resources>
