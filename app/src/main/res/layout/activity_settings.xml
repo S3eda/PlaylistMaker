@@ -26,7 +26,7 @@
             android:layout_marginLeft="12dp"
             android:text="@string/settings"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="@dimen/main_text_size" />
 
     </LinearLayout>
 
@@ -37,7 +37,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="61dp"
+            android:layout_height="@dimen/settings_string_size"
             android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
@@ -45,10 +45,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginTop="@dimen/settings_text_top"
                 android:text="@string/dark_theme"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/settings_text_size" />
 
             <Switch
                 android:layout_width="56dp"
@@ -63,17 +63,17 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="61dp"
+            android:layout_height="@dimen/settings_string_size"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginStart="@dimen/settings_text_start"
+                android:layout_marginTop="@dimen/settings_text_top"
                 android:text="@string/share"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/settings_text_size" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -87,17 +87,17 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="61dp"
+            android:layout_height="@dimen/settings_string_size"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginStart="@dimen/settings_text_start"
+                android:layout_marginTop="@dimen/settings_text_top"
                 android:text="@string/support"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/settings_text_size" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -116,11 +116,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginStart="@dimen/settings_text_start"
+                android:layout_marginTop="@dimen/settings_text_top"
                 android:text="@string/users_agreement"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/settings_text_size" />
 
             <ImageView
                 android:layout_width="wrap_content"
