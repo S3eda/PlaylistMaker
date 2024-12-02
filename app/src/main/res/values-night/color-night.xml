@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#1A1B22</color>
+    <color name="black">#FFFFFFFF</color>
     <color name="ever_black">#1A1B22</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#1A1B22</color>
     <color name="ever_white">#FFFFFFFF</color>
-    <color name="blue">#3772E7</color>
+    <color name="blue">#1A1B22</color>
     <color name="thumbOn">#3772E7</color>
     <color name="thumbOff">#AEAFB4</color>
-    <color name="trackGray">#E6E8EB</color>
-    <color name="gray">#AEAFB4</color>
+    <color name="trackGray">#9FBBF3</color>
+    <color name="gray">#FFFFFF</color>
 </resources>
