@@ -24,11 +24,13 @@ class SearchActivity : AppCompatActivity() {
         backImage.setOnClickListener{
             finish()
         }
-        if (savedInstanceState != null) {
-            saveSearchText = savedInstanceState.getString(SEARCH_STRING, SOME_TEXT)
-        }
 
         val searchText = findViewById<EditText>(R.id.searchText)
+
+        if (savedInstanceState != null) {
+            saveSearchText = savedInstanceState.getString(SEARCH_STRING, SOME_TEXT)
+            searchText.setText(saveSearchText)
+        }
 
         val clearButton = findViewById<Button>(R.id.clearButton)
         clearButton.setOnClickListener {
