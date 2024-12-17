@@ -34,4 +34,29 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">end</item>
     </style>
+
+    <style name="back_bar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/back_height</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="back_image">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:src">@drawable/back</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="back_bar_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+    </style>
 </resources>

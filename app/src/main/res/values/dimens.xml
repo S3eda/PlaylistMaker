@@ -9,4 +9,5 @@
     <dimen name="main_button_horizontal">16dp</dimen>
     <dimen name="main_button_between">16dp</dimen>
     <dimen name="settings_text_start">16dp</dimen>
+    <dimen name="back_height">56dp</dimen>
 </resources>

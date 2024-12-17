@@ -5,28 +5,15 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal">
+        style="@style/back_bar">
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/back"
-            android:scaleType="centerInside"
-            android:foreground="?attr/selectableItemBackground"/>
+            style="@style/back_image"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="12dp"
-            android:text="@string/settings"
-            android:textColor="@color/black"
-            android:textSize="@dimen/main_text_size" />
+            style="@style/back_bar_text"
+            android:text="@string/settings" />
 
     </LinearLayout>
 
