@@ -62,11 +62,12 @@
             android:layout_height="36dp"
             android:layout_marginVertical="8dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="22dp"
             android:visibility="gone"
             android:backgroundTint="@color/searchGray"
-            android:text="x"
-            android:textSize="13sp"
-            android:textColor="@color/ever_black" />
+            app:icon="@drawable/clear"
+            app:iconGravity="textEnd"
+            app:iconPadding="6dp"
+            app:iconTint="@color/hint_search_gray"/>
     </FrameLayout>
 </LinearLayout>

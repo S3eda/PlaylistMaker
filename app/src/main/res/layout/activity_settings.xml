@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -25,77 +26,59 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/settings_string_size"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/settings_text_style"
-                android:text="@string/dark_theme" />
+            android:layout_marginTop="@dimen/first_element_top">
 
             <Switch
                 android:id="@+id/theme"
-                android:layout_width="56dp"
-                android:layout_height="48dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/switch_height"
                 android:layout_gravity="end"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="6dp"
-                android:paddingVertical="11dp"
-                android:paddingRight="9dp"
+                android:layout_marginTop="@dimen/switch_switch_margin_top"
+                android:layout_marginEnd="@dimen/switch_switch_margin_end"
+                android:paddingVertical="@dimen/switch_vertical"
+                android:paddingRight="@dimen/switch_padding_right"
                 android:theme="@style/switch_style"
-                android:trackTint="@color/trackGray" />
+                android:trackTint="@color/trackGray"
+                style="@style/settings_text_style"
+                android:text="@string/dark_theme" />
 
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_size"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/settings_string_size">
 
             <TextView
                 android:id="@+id/share"
                 style="@style/settings_text_style"
-                android:text="@string/share" />
-
-            <ImageView
-                style="@style/settings_image"
-                android:src="@drawable/share"
-                android:layout_marginEnd="32dp"
-                android:layout_marginTop="22dp" />
+                android:text="@string/share"
+                android:drawableEnd="@drawable/share"/>
 
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_size"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/settings_string_size">
 
             <TextView
                 android:id="@+id/support"
                 style="@style/settings_text_style"
-                android:text="@string/support" />
-
-            <ImageView
-                style="@style/settings_image"
-                android:src="@drawable/support"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="22dp"/>
+                android:text="@string/support"
+                android:drawableEnd="@drawable/support"
+                android:layout_marginEnd="@dimen/settings_support_icon_end"/>
 
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="61dp">
+            android:layout_height="@dimen/settings_string_size">
 
             <TextView
                 android:id="@+id/usersAgreement"
                 style="@style/settings_text_style"
-                android:text="@string/users_agreement" />
-
-            <ImageView
-                style="@style/settings_image"
-                android:src="@drawable/user_agreement"
-                android:layout_marginEnd="36dp"
-                android:layout_marginTop="24dp"/>
+                android:text="@string/users_agreement"
+                android:drawableEnd="@drawable/user_agreement"
+                android:layout_marginEnd="@dimen/settings_users_agreement_icon_end"/>
 
         </FrameLayout>
 
