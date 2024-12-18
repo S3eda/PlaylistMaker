@@ -9,4 +9,6 @@
     <color name="thumbOff">#AEAFB4</color>
     <color name="trackGray">#9FBBF3</color>
     <color name="gray">#FFFFFF</color>
+    <color name="searchGray">#FFFFFFFF</color>
+    <color name="hint_search_gray">#1A1B22</color>
 </resources>

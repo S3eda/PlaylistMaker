@@ -12,13 +12,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val search = findViewById<Button>(R.id.search_button)
-        val searchIntent = Intent(this, SearchActivity::class.java)
-        val searchClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                startActivity(searchIntent)
-            }
+        search.setOnClickListener {
+            val searchIntent = Intent(this, SearchActivity::class.java)
+            startActivity(searchIntent)
         }
-        search.setOnClickListener(searchClickListener)
 
         val media = findViewById<Button>(R.id.media_button)
         media.setOnClickListener {

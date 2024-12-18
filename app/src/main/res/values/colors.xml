@@ -8,5 +8,7 @@
     <color name="thumbOn">#3772E7</color>
     <color name="thumbOff">#AEAFB4</color>
     <color name="trackGray">#E6E8EB</color>
+    <color name="searchGray">#E6E8EB</color>
     <color name="gray">#AEAFB4</color>
+    <color name="hint_search_gray">#AEAFB4</color>
 </resources>
