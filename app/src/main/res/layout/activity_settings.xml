@@ -23,64 +23,38 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <Switch
+            android:id="@+id/theme"
+            style="@style/settings_text_style"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_size"
-            android:layout_marginTop="@dimen/first_element_top">
+            android:layout_height="@dimen/settings_string_height"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/first_element_top"
+            android:paddingRight="@dimen/switch_padding_right"
+            android:text="@string/dark_theme"
+            android:theme="@style/switch_style"
+            android:trackTint="@color/trackGray"
+            android:layout_marginEnd="@dimen/switch_margin_end"/>
 
-            <Switch
-                android:id="@+id/theme"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/switch_height"
-                android:layout_gravity="end"
-                android:layout_marginTop="@dimen/switch_switch_margin_top"
-                android:layout_marginEnd="@dimen/switch_switch_margin_end"
-                android:paddingVertical="@dimen/switch_vertical"
-                android:paddingRight="@dimen/switch_padding_right"
-                android:theme="@style/switch_style"
-                android:trackTint="@color/trackGray"
-                style="@style/settings_text_style"
-                android:text="@string/dark_theme" />
+        <TextView
+            android:id="@+id/share"
+            style="@style/settings_text_style"
+            android:text="@string/share"
+            android:drawableEnd="@drawable/share"/>
 
-        </FrameLayout>
+        <TextView
+            android:id="@+id/support"
+            style="@style/settings_text_style"
+            android:text="@string/support"
+            android:drawableEnd="@drawable/support"
+            android:layout_marginEnd="@dimen/settings_support_icon_end"/>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_size">
-
-            <TextView
-                android:id="@+id/share"
-                style="@style/settings_text_style"
-                android:text="@string/share"
-                android:drawableEnd="@drawable/share"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_size">
-
-            <TextView
-                android:id="@+id/support"
-                style="@style/settings_text_style"
-                android:text="@string/support"
-                android:drawableEnd="@drawable/support"
-                android:layout_marginEnd="@dimen/settings_support_icon_end"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_size">
-
-            <TextView
-                android:id="@+id/usersAgreement"
-                style="@style/settings_text_style"
-                android:text="@string/users_agreement"
-                android:drawableEnd="@drawable/user_agreement"
-                android:layout_marginEnd="@dimen/settings_users_agreement_icon_end"/>
-
-        </FrameLayout>
+        <TextView
+            android:id="@+id/usersAgreement"
+            style="@style/settings_text_style"
+            android:text="@string/users_agreement"
+            android:drawableEnd="@drawable/user_agreement"
+            android:layout_marginEnd="@dimen/settings_users_agreement_icon_end"/>
 
     </LinearLayout>
 
