@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="main_activity_button" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_marginHorizontal">@dimen/main_button_horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:backgroundTint">@color/ever_white</item>
+        <item name="android:textColor">@color/ever_black</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+        <item name="cornerRadius">@dimen/main_corner_radius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/main_icon_padding</item>
+        <item name="iconTint">@color/ever_black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
+
+    <style name="settings_text_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/settings_text_start</item>
+        <item name="android:layout_marginTop">@dimen/settings_text_top</item>
+        <item name="android:layout_marginEnd">@dimen/settings_text_end</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/settings_text_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="settings_image">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end</item>
+    </style>
+
+    <style name="back_bar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/back_height</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="back_image">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:src">@drawable/back</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="back_bar_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+    </style>
+</resources>
