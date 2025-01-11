@@ -19,14 +19,14 @@
     <dimen name="last_main_button_bottom">28dp</dimen>
     <dimen name="app_name_top">10dp</dimen>
     <dimen name="app_name_size">26dp</dimen>
-    <dimen name="recycler_view_item_haight">61dp</dimen>
-    <dimen name="recycler_view_haight">61dp</dimen>
-    <dimen name="recycler_view_info_haight">13dp</dimen>
+    <dimen name="recycler_view_item_height">61dp</dimen>
+    <dimen name="recycler_view_height">61dp</dimen>
+    <dimen name="recycler_view_info_height">13dp</dimen>
     <dimen name="recycler_view_info_width">250dp</dimen>
     <dimen name="recycler_view_info_top">34dp</dimen>
     <dimen name="recycler_view_info_left">66dp</dimen>
     <dimen name="recycler_view_info_textSize">11sp</dimen>
-    <dimen name="recycler_view_songName_haight">19dp</dimen>
+    <dimen name="recycler_view_songName_height">19dp</dimen>
     <dimen name="recycler_view_songName_width">250dp</dimen>
     <dimen name="recycler_view_songName_top">14dp</dimen>
     <dimen name="recycler_view_songName_left">66dp</dimen>
@@ -35,7 +35,7 @@
     <dimen name="recycler_view_image_top">8dp</dimen>
     <dimen name="recycler_view_image_left">13dp</dimen>
     <dimen name="recycler_view_choose_track_end">20dp</dimen>
-    <dimen name="search_recucler_view_top">16dp</dimen>
-    <dimen name="search_search_string_haigth">52dp</dimen>
+    <dimen name="search_recycler_view_top">16dp</dimen>
+    <dimen name="search_searchString_height">52dp</dimen>
 
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/recycler_view_item_haight"
+    android:layout_height="@dimen/recycler_view_item_height"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
@@ -16,14 +16,14 @@
         style="@style/track_name_style"
         android:id="@+id/track_name"
         android:layout_width="@dimen/recycler_view_songName_width"
-        android:layout_height="@dimen/recycler_view_songName_haight"
+        android:layout_height="@dimen/recycler_view_songName_height"
         android:layout_marginLeft="@dimen/recycler_view_songName_left"
         android:layout_marginTop="@dimen/recycler_view_songName_top"
         tools:text="Fgggg"/>
 
     <LinearLayout
         android:layout_width="@dimen/recycler_view_info_width"
-        android:layout_height="@dimen/recycler_view_info_haight"
+        android:layout_height="@dimen/recycler_view_info_height"
         android:layout_marginTop="@dimen/recycler_view_info_top"
         android:layout_marginLeft="@dimen/recycler_view_info_left">
 
@@ -39,7 +39,7 @@
             android:id="@+id/track_time"
             style="@style/track_info_style"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/recycler_view_info_haight"
+            android:layout_height="@dimen/recycler_view_info_height"
             tools:text="4:54"/>
 
     </LinearLayout>
