@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/recycler_view_item_height"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/artwork"
+        android:layout_width="@dimen/recycler_view_image_square"
+        android:layout_height="@dimen/recycler_view_image_square"
+        android:layout_marginTop="@dimen/recycler_view_image_top"
+        android:layout_marginLeft="@dimen/recycler_view_image_left"
+        tools:src="@drawable/info_allipse"/>
+
+    <TextView
+        style="@style/track_name_style"
+        android:id="@+id/track_name"
+        android:layout_width="@dimen/recycler_view_songName_width"
+        android:layout_height="@dimen/recycler_view_songName_height"
+        android:layout_marginLeft="@dimen/recycler_view_songName_left"
+        android:layout_marginTop="@dimen/recycler_view_songName_top"
+        tools:text="Fgggg"/>
+
+    <LinearLayout
+        android:layout_width="@dimen/recycler_view_info_width"
+        android:layout_height="@dimen/recycler_view_info_height"
+        android:layout_marginTop="@dimen/recycler_view_info_top"
+        android:layout_marginLeft="@dimen/recycler_view_info_left">
+
+        <TextView
+            android:id="@+id/artist_name"
+            style="@style/track_info_style"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableEnd="@drawable/info_allipse"
+            tools:text="Fggg"/>
+
+        <TextView
+            android:id="@+id/track_time"
+            style="@style/track_info_style"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/recycler_view_info_height"
+            tools:text="4:54"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/recycler_view_choose_track_end"
+        android:drawableEnd="@drawable/choose_track"/>
+
+</FrameLayout>

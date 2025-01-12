@@ -20,7 +20,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="@dimen/search_searchString_height"
         android:orientation="horizontal">
 
         <ImageView
@@ -69,5 +69,13 @@
             app:iconGravity="textEnd"
             app:iconPadding="6dp"
             app:iconTint="@color/hint_search_gray"/>
+
     </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/search_recycler_view_top"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </LinearLayout>
