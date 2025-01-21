@@ -22,7 +22,7 @@ class PlaylistViewHolder(parent: ViewGroup) :
 
         vhTrackName.text = item.trackName
         vhArtistName.text = item.artistName
-        vhTrackTime.text = item.trackTimeMillis
+        vhTrackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis)
         Glide.with(itemView)
             .load(artwork)
             .placeholder(R.drawable.internet_error_icon)
