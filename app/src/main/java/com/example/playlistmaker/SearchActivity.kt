@@ -4,19 +4,37 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.SearchActivity.Companion.SOME_TEXT
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
     var saveSearchText:String = SOME_TEXT
+    private val baseUrl = "https://itunes.apple.com"
+    val retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    private val searchAPI = retrofit.create(SearchAPI::class.java)
+
+    private lateinit var searchText: EditText
+    private lateinit var somethingWrongText: TextView
+    private lateinit var somethingWrongImage: ImageView
+    private lateinit var refreshButton: Button
+
+    private var songsList = mutableListOf<SongData>()
+    private val songsAdapter = SongsAdapter(songsList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +44,10 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        val searchText = findViewById<EditText>(R.id.searchText)
+        searchText = findViewById(R.id.searchText)
+        somethingWrongText = findViewById(R.id.something_wrong_text)
+        somethingWrongImage = findViewById(R.id.something_wrong_image)
+        refreshButton = findViewById(R.id.refresh_button)
 
         if (savedInstanceState != null) {
             saveSearchText = savedInstanceState.getString(SEARCH_STRING, SOME_TEXT)
@@ -36,6 +57,18 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<Button>(R.id.clearButton)
         clearButton.setOnClickListener {
             searchText.setText("")
+            songsList.clear()
+            songsAdapter.notifyDataSetChanged()
+            somethingWrongText.visibility = View.GONE
+            somethingWrongImage.visibility = View.GONE
+            refreshButton.visibility = View.GONE
+        }
+
+        refreshButton.setOnClickListener{
+            somethingWrongText.visibility = View.GONE
+            somethingWrongImage.visibility = View.GONE
+            refreshButton.visibility = View.GONE
+            searchTrack()
         }
 
         val searchTextWatcher = object : TextWatcher {
@@ -50,43 +83,15 @@ class SearchActivity : AppCompatActivity() {
         }
         searchText.addTextChangedListener(searchTextWatcher)
 
-        val songsAdapter = SongsAdapter(
-            listOf(
-                SongData(
-                    "Smells Like Teen Spirit",
-                    "Nirvana",
-                    "5:01",
-                    "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-                ),
-                SongData(
-                    "Billie Jean",
-                    "Michael Jackson",
-                    "4:35",
-                    "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-                ),
-                SongData(
-                    "Stayin' Alive",
-                    "Bee Gees",
-                    "4:10",
-                    "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-                ),
-                SongData(
-                    "Whole Lotta Love",
-                    "Led Zeppelin",
-                    "5:33",
-                    "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-                ),
-                SongData(
-                    "Sweet Child O'Mine",
-                    "Guns N' Roses",
-                    "5:03",
-                    "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-                )
-            )
-        )
-
         val searchList = findViewById<RecyclerView>(R.id.search_recyclerView)
         searchList.adapter = songsAdapter
+
+            searchText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchTrack()
+            }
+                false
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -104,6 +109,59 @@ class SearchActivity : AppCompatActivity() {
             View.GONE
         } else {
             View.VISIBLE
+        }
+    }
+
+        private fun searchTrack (){
+        searchAPI
+            .search(searchText.text.toString())
+            .enqueue(object: Callback<SongsResponse> {
+                override fun onResponse(
+                    call: Call<SongsResponse>,
+                    response: Response<SongsResponse>
+                ) {
+                    if (response.code() == 200) {
+                        songsList.clear()
+                        if (response.body()?.results?.isNotEmpty() == true) {
+                            songsList.addAll(response.body()?.results!!)
+                            songsAdapter.notifyDataSetChanged()
+                        }
+                        if (songsList.isEmpty()){
+                            showMessage(getString(R.string.empty_search_result), "", false)
+                        }
+                    } else {
+                        showMessage(getString(R.string.trouble_with_internet), "", true)
+                    }
+                }
+
+                override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
+                    showMessage(getString(R.string.trouble_with_internet), "", true)
+                }
+            })
+    }
+
+    private fun showMessage(text: String, additionalMessage: String, internetError: Boolean) {
+        if (internetError) {
+            somethingWrongText.visibility = View.VISIBLE
+            somethingWrongImage.visibility = View.VISIBLE
+            refreshButton.visibility = View.VISIBLE
+            songsList.clear()
+            songsAdapter.notifyDataSetChanged()
+            somethingWrongText.text = text
+            somethingWrongImage.setImageResource(R.drawable.trouble_with_internet)
+        } else {
+            if (text.isNotEmpty()) {
+                somethingWrongText.visibility = View.VISIBLE
+                somethingWrongImage.visibility = View.VISIBLE
+                songsList.clear()
+                songsAdapter.notifyDataSetChanged()
+                somethingWrongText.text = text
+                somethingWrongImage.setImageResource(R.drawable.empty_search)
+                if (additionalMessage.isNotEmpty()) {
+                    Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
         }
     }
 }

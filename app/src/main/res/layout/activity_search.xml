@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -40,6 +42,8 @@
 
         <EditText
             android:id="@+id/searchText"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginRight="22dp"
@@ -72,10 +76,35 @@
 
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_recyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/search_recycler_view_top"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_marginTop="@dimen/search_recycler_view_top">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <ImageView
+            android:id="@+id/something_wrong_image"
+            style="@style/something_wrong_image"
+            android:src = "@drawable/empty_search"
+            android:visibility="gone"
+            tools:src="@drawable/trouble_with_internet"/>
+
+        <TextView
+            android:id="@+id/something_wrong_text"
+            style="@style/something_wrong_text"
+            android:visibility="gone"
+            tools:text="@string/trouble_with_internet"/>
+
+        <Button
+            android:id = "@+id/refresh_button"
+            style="@style/refresh_button"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 </LinearLayout>

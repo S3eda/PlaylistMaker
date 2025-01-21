@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlaylistViewHolder(parent: ViewGroup) :
     RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.playlist_item, parent, false)) {
@@ -20,7 +22,7 @@ class PlaylistViewHolder(parent: ViewGroup) :
 
         vhTrackName.text = item.trackName
         vhArtistName.text = item.artistName
-        vhTrackTime.text = item.trackTime
+        vhTrackTime.text = item.trackTimeMillis
         Glide.with(itemView)
             .load(artwork)
             .placeholder(R.drawable.internet_error_icon)

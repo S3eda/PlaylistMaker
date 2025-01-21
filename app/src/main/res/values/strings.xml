@@ -12,4 +12,7 @@
     <string name="thanks_dev">Спасибо разработчикам и разработчицам за крутое приложение</string>
     <string name="dev_email">Maxim.kolotowckin@yandex.ru</string>
     <string name="users_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="refresh">Обновить</string>
+    <string name="trouble_with_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="empty_search_result">Ничего не нашлось</string>
 </resources>
