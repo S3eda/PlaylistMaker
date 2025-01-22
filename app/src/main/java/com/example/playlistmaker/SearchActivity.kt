@@ -65,9 +65,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener{
-            somethingWrongText.visibility = View.GONE
-            somethingWrongImage.visibility = View.GONE
-            refreshButton.visibility = View.GONE
+            somethingWrongVisibility()
             searchTrack()
         }
 
@@ -113,6 +111,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
         private fun searchTrack (){
+            somethingWrongVisibility()
         searchAPI
             .search(searchText.text.toString())
             .enqueue(object: Callback<SongsResponse> {
@@ -163,5 +162,11 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun somethingWrongVisibility (){
+        somethingWrongText.visibility = View.GONE
+        somethingWrongImage.visibility = View.GONE
+        refreshButton.visibility = View.GONE
     }
 }
