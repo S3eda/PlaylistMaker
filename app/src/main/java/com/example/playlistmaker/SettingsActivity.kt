@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +52,18 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(agreementIntent)
         }
 
-        val changeTheme = findViewById<TextView>(R.id.theme)
+        val sharedPrefs = getSharedPreferences(App.PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
+        val darkTheme = sharedPrefs.getBoolean(App.THEME_KEY, false)
+        val changeTheme = findViewById<SwitchMaterial>(R.id.theme_switch)
+        changeTheme.isChecked = darkTheme
         changeTheme.setOnClickListener{
-            Toast.makeText(this@SettingsActivity, "Нажали на changeTheme!", Toast.LENGTH_SHORT).show()
-        }
+            changeTheme.setOnCheckedChangeListener { _, checked ->
+                (applicationContext as App).switchTheme(checked)
+                sharedPrefs.edit()
+                    .putBoolean(App.THEME_KEY, checked)
+                    .apply()
 
+            }
+        }
     }
 }

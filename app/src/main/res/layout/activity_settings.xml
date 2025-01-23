@@ -22,18 +22,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Switch
-            android:id="@+id/theme"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/theme_switch"
             style="@style/settings_text_style"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_string_height"
-            android:layout_gravity="end"
-            android:layout_marginTop="@dimen/first_element_top"
-            android:paddingRight="@dimen/switch_padding_right"
-            android:text="@string/dark_theme"
             android:theme="@style/switch_style"
-            android:trackTint="@color/trackGray"
-            android:layout_marginEnd="@dimen/switch_margin_end"/>
+            android:text="@string/dark_theme"
+            android:layout_gravity="start"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_string_height"/>
 
         <TextView
             android:id="@+id/share"
