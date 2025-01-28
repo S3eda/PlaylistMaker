@@ -2,8 +2,6 @@ package com.example.playlistmaker
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import java.util.LinkedList
-import java.util.Queue
 
 class SongsAdapter (
     private val data: List<SongData>

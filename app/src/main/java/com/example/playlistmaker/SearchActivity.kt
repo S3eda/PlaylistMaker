@@ -28,7 +28,7 @@ class SearchActivity : AppCompatActivity(){
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val searchAPI = retrofit.create(SearchAPI::class.java)
-    private val historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
+    private var historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
     private var songsList = mutableListOf<SongData>()
     private val songsAdapter = SongsAdapter(songsList)
 
@@ -54,8 +54,6 @@ class SearchActivity : AppCompatActivity(){
             historyAdapter.notifyDataSetChanged()
         }
         searchHistoryEx.completionOfSongAdapterSearchHistory(searchHistoryEx)
-        val listForHistoryAdapter = searchHistoryEx.listForAdapter(searchHistoryEx.readHistoryList().toMutableList(), SongsAdapter.searchHistory)
-        val historyAdapter = SongsAdapter(listForHistoryAdapter)
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
@@ -101,14 +99,24 @@ class SearchActivity : AppCompatActivity(){
         }
 
         val searchTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val listForHistoryAdapter = searchHistoryEx.listForAdapter(searchHistoryEx.readHistoryList().toMutableList(), SongsAdapter.searchHistory)
+                val historyAdapter = SongsAdapter(listForHistoryAdapter)
+                historyAdapter.notifyDataSetChanged()
+            }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                if(s.toString().isEmpty()){
+                    searchList.visibility = View.GONE
+                    searchHistory.visibility = View.VISIBLE
+                }
+            }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 clearButton.visibility = clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
                 searchHistory.visibility = if(s?.isEmpty()==true && searchHistoryEx.readHistoryList().toMutableList().isNotEmpty())View.VISIBLE else View.GONE
+                searchHistoryEx.writeHistoryList(SongsAdapter.searchHistory.toTypedArray())
             }
         }
         searchText.addTextChangedListener(searchTextWatcher)
@@ -121,6 +129,9 @@ class SearchActivity : AppCompatActivity(){
         searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchTrack()
+                songsList.clear()
+                searchHistory.visibility = View.GONE
+                searchList.visibility = View.VISIBLE
             }
                 false
         }
