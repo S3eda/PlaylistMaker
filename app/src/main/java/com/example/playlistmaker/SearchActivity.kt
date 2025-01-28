@@ -100,7 +100,11 @@ class SearchActivity : AppCompatActivity(){
 
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val listForHistoryAdapter = searchHistoryEx.listForAdapter(searchHistoryEx.readHistoryList().toMutableList(), SongsAdapter.searchHistory)
+                val listForHistoryAdapter = searchHistoryEx
+                    .listForAdapter(searchHistoryEx
+                        .readHistoryList()
+                        .toMutableList(),
+                        SongsAdapter.searchHistory)
                 val historyAdapter = SongsAdapter(listForHistoryAdapter)
                 historyAdapter.notifyDataSetChanged()
             }
@@ -115,7 +119,12 @@ class SearchActivity : AppCompatActivity(){
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 clearButton.visibility = clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                searchHistory.visibility = if(s?.isEmpty()==true && searchHistoryEx.readHistoryList().toMutableList().isNotEmpty())View.VISIBLE else View.GONE
+                searchHistory.visibility = if(
+                    s?.isEmpty()==true &&
+                    searchHistoryEx
+                        .readHistoryList()
+                        .toMutableList()
+                        .isNotEmpty()) View.VISIBLE else View.GONE
                 searchHistoryEx.writeHistoryList(SongsAdapter.searchHistory.toTypedArray())
             }
         }
