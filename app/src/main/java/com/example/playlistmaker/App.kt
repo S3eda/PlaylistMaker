@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatDelegate
 class App:Application() {
 
     companion object {
-        const val PLAYLISTMAKER_THEME_MODE = "playlist_maker_theme_mode"
+        const val PLAYLISTMAKER_THEME_MODE = "playlistmaker_theme_mode"
         const val THEME_KEY = "theme_key"
+        const val HISTORY_KEY = "history_key"
+        const val HISTORY_LIST = "history_list"
     }
 
     var darkTheme = false

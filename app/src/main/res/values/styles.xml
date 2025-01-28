@@ -111,4 +111,43 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="textStyle_YSmedium_500">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
+
+    <style name="textStyle_YSmedium_400">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="textStyle_YSregular_500">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
+
+    <style name="textStyle_YSregular_400">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="clearHistory_button_style" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">@dimen/clearHistory_button_width</item>
+        <item name="android:layout_height">@dimen/clearHistory_button_height</item>
+        <item name="android:backgroundTint">@color/black</item>
+        <item name="android:paddingHorizontal">0dp</item>
+        <item name="android:text">@string/clear_history</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/clearHistory_button_textSize</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:layout_marginTop">@dimen/clearHistory_button_marginTop</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="cornerRadius">@dimen/clearHistory_button_cornerRadius</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
 </resources>
