@@ -77,6 +77,7 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/x"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/search_recycler_view_top">

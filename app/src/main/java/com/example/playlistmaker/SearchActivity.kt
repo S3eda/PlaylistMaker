@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -69,11 +70,9 @@ class SearchActivity : AppCompatActivity(){
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        searchHistoryEx.writeHistoryList(SongsAdapter.searchHistory.toTypedArray())
         searchHistoryEx.historyVisibility(searchHistoryEx.readHistoryList().toMutableList().isEmpty(), searchHistory)
 
         backImage.setOnClickListener{
-            searchHistoryEx.writeHistoryList(SongsAdapter.searchHistory.toTypedArray())
             finish()
         }
 
@@ -98,6 +97,11 @@ class SearchActivity : AppCompatActivity(){
             searchTrack()
         }
 
+        searchList.setOnClickListener(){
+            val songPageIntent = Intent(this, SongPageActivity::class.java)
+            startActivity(songPageIntent)
+        }
+
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val listForHistoryAdapter = searchHistoryEx
@@ -112,7 +116,10 @@ class SearchActivity : AppCompatActivity(){
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty()){
                     searchList.visibility = View.GONE
-                    searchHistory.visibility = View.VISIBLE
+                    searchHistory.visibility = if(
+                        s?.isEmpty()==true &&
+                        historyVisibility(searchHistoryEx)) View.VISIBLE else View.GONE
+                    somethingWrongVisibility()
                 }
             }
 
@@ -121,11 +128,7 @@ class SearchActivity : AppCompatActivity(){
                 saveSearchText = s.toString()
                 searchHistory.visibility = if(
                     s?.isEmpty()==true &&
-                    searchHistoryEx
-                        .readHistoryList()
-                        .toMutableList()
-                        .isNotEmpty()) View.VISIBLE else View.GONE
-                searchHistoryEx.writeHistoryList(SongsAdapter.searchHistory.toTypedArray())
+                    historyVisibility(searchHistoryEx)) View.VISIBLE else View.GONE
             }
         }
         searchText.addTextChangedListener(searchTextWatcher)
@@ -222,5 +225,11 @@ class SearchActivity : AppCompatActivity(){
         somethingWrongText.visibility = View.GONE
         somethingWrongImage.visibility = View.GONE
         refreshButton.visibility = View.GONE
+    }
+
+    private fun historyVisibility (ex: SearchHistory):Boolean{
+        return ex.readHistoryList()
+            .toMutableList()
+            .isNotEmpty()
     }
 }

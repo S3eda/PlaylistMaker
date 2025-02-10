@@ -1,7 +1,9 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 
 class SongsAdapter (
     private val data: List<SongData>
@@ -18,6 +20,10 @@ class SongsAdapter (
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(data[position])
         holder.itemView.setOnClickListener{
+            val songPageIntent = Intent(holder.itemView.context,SongPageActivity::class.java)
+            val json = Gson().toJson(data[position])
+            songPageIntent.putExtra("SONG_INFORMATION", json)
+            holder.itemView.context.startActivity(songPageIntent)
             when{
                 searchHistory.size != 0 && data[position] in searchHistory-> {
 
@@ -37,7 +43,9 @@ class SongsAdapter (
                     searchHistory.reverse()
                 }
                 else -> {
+                    searchHistory.reverse()
                     searchHistory.add(data[position])
+                    searchHistory.reverse()
                 }
             }
         }
@@ -45,13 +53,5 @@ class SongsAdapter (
 
     override fun getItemCount(): Int {
         return data.size
-    }
-
-    fun changeList(list1:MutableList<SongData>, list2:MutableList<SongData>){
-        var i = 1
-        for(element in list1) {
-            list2.add(list1[list1.size - i])
-            i = i+1
-        }
     }
 }
