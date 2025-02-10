@@ -12,7 +12,7 @@
     <dimen name="main_text_size">22sp</dimen>
     <dimen name="main_corner_radius">16dp</dimen>
     <dimen name="main_icon_padding">10dp</dimen>
-    <dimen name="main_button_horizontal">16dp</dimen>
+    <dimen name="main_guideLine">16dp</dimen>
     <dimen name="main_button_between">16dp</dimen>
     <dimen name="first_element_top">24dp</dimen>
     <dimen name="last_main_button_bottom">28dp</dimen>
