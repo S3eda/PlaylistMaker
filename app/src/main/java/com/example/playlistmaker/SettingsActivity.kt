@@ -4,9 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +33,6 @@ class SettingsActivity : AppCompatActivity() {
 
         val support = findViewById<TextView>(R.id.support)
         support.setOnClickListener{
-            Toast.makeText(this@SettingsActivity, "Нажали на usersAgreement!", Toast.LENGTH_SHORT).show()
             val subjectForDev = getString(R.string.for_dev)
             val massageForDev = getString(R.string.thanks_dev)
             val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -44,16 +46,20 @@ class SettingsActivity : AppCompatActivity() {
 
         val usersAgreement = findViewById<TextView>(R.id.usersAgreement)
         usersAgreement.setOnClickListener{
-            Toast.makeText(this@SettingsActivity, "Нажали на support!", Toast.LENGTH_SHORT).show()
             val usersAgreementLink = getString(R.string.users_agreement_link)
             val agreementIntent = Intent(Intent.ACTION_VIEW, Uri.parse(usersAgreementLink))
             startActivity(agreementIntent)
         }
 
-        val changeTheme = findViewById<TextView>(R.id.theme)
-        changeTheme.setOnClickListener{
-            Toast.makeText(this@SettingsActivity, "Нажали на changeTheme!", Toast.LENGTH_SHORT).show()
+        val changeTheme = findViewById<SwitchMaterial>(R.id.theme_switch)
+        val themeSharedPrefs = getSharedPreferences(App.PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
+        val darkTheme = themeSharedPrefs.getBoolean(App.THEME_KEY, false)
+        changeTheme.isChecked = darkTheme
+        changeTheme.setOnCheckedChangeListener { _, checked ->
+            themeSharedPrefs.edit()
+                .putBoolean(App.THEME_KEY, checked)
+                .apply()
+            (applicationContext as App).switchTheme(checked)
         }
-
     }
 }

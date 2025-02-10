@@ -4,7 +4,8 @@
     android:layout_height="@dimen/recycler_view_item_height"
     android:background="@color/white"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:foreground="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/artwork"
