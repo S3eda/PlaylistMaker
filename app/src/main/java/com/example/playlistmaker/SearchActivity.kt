@@ -3,7 +3,6 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -13,6 +12,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -51,7 +52,7 @@ class SearchActivity : AppCompatActivity(){
 
         val historySharedPrefs = getSharedPreferences(App.HISTORY_LIST, MODE_PRIVATE)
         val searchHistoryEx = SearchHistory(historySharedPrefs)
-        historySharedPrefs.registerOnSharedPreferenceChangeListener{ _, _ ->
+        historySharedPrefs.registerOnSharedPreferenceChangeListener { _, _ ->
             historyAdapter.notifyDataSetChanged()
         }
         searchHistoryEx.completionOfSongAdapterSearchHistory(searchHistoryEx)
@@ -70,13 +71,15 @@ class SearchActivity : AppCompatActivity(){
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        searchHistoryEx.historyVisibility(searchHistoryEx.readHistoryList().toMutableList().isEmpty(), searchHistory)
+        searchHistoryEx.historyVisibility(
+            searchHistoryEx.readHistoryList().toMutableList().isEmpty(), searchHistory
+        )
 
-        backImage.setOnClickListener{
+        backImage.setOnClickListener {
             finish()
         }
 
-        clearHistoryButton.setOnClickListener{
+        clearHistoryButton.setOnClickListener {
             searchHistoryEx.clearHistory(searchHistory)
         }
 
@@ -92,46 +95,44 @@ class SearchActivity : AppCompatActivity(){
             somethingWrongVisibility()
         }
 
-        refreshButton.setOnClickListener{
+        refreshButton.setOnClickListener {
             somethingWrongVisibility()
             searchTrack()
         }
 
-        searchList.setOnClickListener(){
+        searchList.setOnClickListener() {
             val songPageIntent = Intent(this, SongPageActivity::class.java)
             startActivity(songPageIntent)
         }
 
-        val searchTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        searchText.addTextChangedListener(
+            beforeTextChanged = {s: CharSequence?, p1: Int, p2: Int, p3: Int ->
                 val listForHistoryAdapter = searchHistoryEx
-                    .listForAdapter(searchHistoryEx
-                        .readHistoryList()
-                        .toMutableList(),
-                        SongsAdapter.searchHistory)
+                    .listForAdapter(
+                        searchHistoryEx
+                            .readHistoryList()
+                            .toMutableList(),
+                        SongsAdapter.searchHistory
+                    )
                 val historyAdapter = SongsAdapter(listForHistoryAdapter)
                 historyAdapter.notifyDataSetChanged()
-            }
+            },
 
-            override fun afterTextChanged(s: Editable?) {
-                if(s.toString().isEmpty()){
-                    searchList.visibility = View.GONE
-                    searchHistory.visibility = if(
-                        s?.isEmpty()==true &&
-                        historyVisibility(searchHistoryEx)) View.VISIBLE else View.GONE
+            afterTextChanged = { s: Editable? ->
+                if (s.toString().isEmpty()) {
+                    searchList.isVisible = false
+                    searchHistory.isVisible = s?.isEmpty() == true && historyVisibility(searchHistoryEx)
                     somethingWrongVisibility()
                 }
-            }
+            },
 
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                clearButton.visibility = clearSearchButtonVisibility(s)
+            onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
+                clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                searchHistory.visibility = if(
-                    s?.isEmpty()==true &&
-                    historyVisibility(searchHistoryEx)) View.VISIBLE else View.GONE
+                searchHistory.isVisible = s?.isEmpty() == true && historyVisibility(searchHistoryEx)
             }
-        }
-        searchText.addTextChangedListener(searchTextWatcher)
+        )
+
         searchText.setOnFocusChangeListener{ _, hasFocus ->
             if(hasFocus) {
                 searchList.visibility = View.VISIBLE
@@ -159,12 +160,8 @@ class SearchActivity : AppCompatActivity(){
         const val SOME_TEXT = ""
     }
 
-    private fun clearSearchButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    private fun clearSearchButtonVisibility(s: CharSequence?): Boolean {
+        return s.isNullOrEmpty()
     }
 
         private fun searchTrack (){
@@ -229,7 +226,6 @@ class SearchActivity : AppCompatActivity(){
 
     private fun historyVisibility (ex: SearchHistory):Boolean{
         return ex.readHistoryList()
-            .toMutableList()
             .isNotEmpty()
     }
 }
