@@ -18,6 +18,7 @@ class PlaylistViewHolder(parent: ViewGroup) :
     private val vhArtwork: ImageView = itemView.findViewById(R.id.artwork)
 
     fun bind(item: SongData){
+
         val artwork = item.artworkUrl100
 
         vhTrackName.text = item.trackName

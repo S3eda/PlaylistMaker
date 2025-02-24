@@ -4,23 +4,21 @@
     <dimen name="settings_string_height">61dp</dimen>
     <dimen name="settings_text_size">16sp</dimen>
     <dimen name="settings_text_top">21dp</dimen>
-    <dimen name="settings_text_end">32dp</dimen>
+    <dimen name="settings_share_end">32dp</dimen>
     <dimen name="settings_support_icon_end">30dp</dimen>
+    <dimen name="settings_switch_end">24dp</dimen>
     <dimen name="settings_users_agreement_icon_end">36dp</dimen>
-    <dimen name="settings_text_start">16dp</dimen>
+    <dimen name="settings_guideLine">16dp</dimen>
 
     <dimen name="main_text_size">22sp</dimen>
     <dimen name="main_corner_radius">16dp</dimen>
     <dimen name="main_icon_padding">10dp</dimen>
-    <dimen name="main_button_horizontal">16dp</dimen>
+    <dimen name="main_guideLine">16dp</dimen>
     <dimen name="main_button_between">16dp</dimen>
     <dimen name="first_element_top">24dp</dimen>
     <dimen name="last_main_button_bottom">28dp</dimen>
 
     <dimen name="back_height">56dp</dimen>
-
-    <dimen name="switch_padding_right">9dp</dimen>
-    <dimen name="switch_margin_end">0dp</dimen>
 
     <dimen name="app_name_top">10dp</dimen>
     <dimen name="app_name_size">26dp</dimen>
@@ -65,4 +63,15 @@
     <dimen name="clearHistory_button_cornerRadius">54dp</dimen>
     <dimen name="clearHistory_button_textSize">14sp</dimen>
 
+    <dimen name="song_page_vertical_guideline">24dp</dimen>
+    <dimen name="song_page_toolbar_guideline">56dp</dimen>
+    <dimen name="song_page_like_and_playlist_button_top">54dp</dimen>
+    <dimen name="song_page_information_text_top">50dp</dimen>
+    <dimen name="song_page_play_button_top">30dp</dimen>
+    <dimen name="song_page_name_top">24dp</dimen>
+    <dimen name="song_page_group_top">12dp</dimen>
+    <dimen name="song_page_text_group_and_progress_size">14sp</dimen>
+    <dimen name="song_page_text_name_size">22sp</dimen>
+    <dimen name="song_page_play_button_size">100dp</dimen>
+    <dimen name="song_page_like_and_playlist_button_size">51dp</dimen>
 </resources>
