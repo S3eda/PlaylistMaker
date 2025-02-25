@@ -90,7 +90,7 @@ class SongPageActivity : AppCompatActivity(){
 
         playButton.setOnClickListener{
             playbackControl()
-            startTimer(songExemp.trackTimeMillis.toLong())
+            startTimer(0L)
         }
     }
 
@@ -115,6 +115,8 @@ class SongPageActivity : AppCompatActivity(){
         }
         mediaPlayer.setOnCompletionListener {
             playerState = PLAYER_STATE_PREPARED
+            playButton.setImageResource(R.drawable.play_button)
+            progress.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
         }
     }
 
@@ -151,9 +153,9 @@ class SongPageActivity : AppCompatActivity(){
         return object : Runnable {
             override fun run() {
                 val timeLeft = mediaPlayer.getCurrentPosition()
-                val remainingTime = duration - timeLeft
+                val remainingTime = duration + timeLeft
 
-                if (playerState == 2 && remainingTime > 0) {
+                if (playerState == 2 && remainingTime < 30000L) {
                     val seconds = remainingTime / DELAY
                     progress.text = String.format("%02d:%02d", seconds / 60, seconds % 60)
                     handler.postDelayed(this, DELAY / 3)
