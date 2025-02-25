@@ -52,9 +52,10 @@ class SearchActivity : AppCompatActivity(){
     private lateinit var clearHistoryButton: Button
     private lateinit var searchList: RecyclerView
     private lateinit var historyList: RecyclerView
-    private lateinit var searchHistory: LinearLayout
+    //private lateinit var searchHistory: LinearLayout
     private lateinit var backImage: ImageView
     private lateinit var progressBar: ProgressBar
+    private lateinit var historyTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,23 +77,23 @@ class SearchActivity : AppCompatActivity(){
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchList = findViewById(R.id.search_recyclerView)
         historyList = findViewById(R.id.history_recyclerView)
-        searchHistory = findViewById(R.id.search_history)
+        //searchHistory = findViewById(R.id.search_history)
         backImage = findViewById(R.id.back_search)
         progressBar = findViewById(R.id.progress)
+        historyTitle = findViewById(R.id.history_title)
 
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        searchHistoryEx.historyVisibility(
-            searchHistoryEx.readHistoryList().toMutableList().isEmpty(), searchHistory
-        )
+        isHistoryVisible(searchHistoryEx.readHistoryList().toMutableList().isNotEmpty())
 
         backImage.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistoryEx.clearHistory(searchHistory)
+            searchHistoryEx.clearHistory()
+            isHistoryVisible(false)
         }
 
         if (savedInstanceState != null) {
@@ -133,7 +134,7 @@ class SearchActivity : AppCompatActivity(){
             afterTextChanged = { s: Editable? ->
                 if (s.toString().isEmpty()) {
                     searchList.isVisible = false
-                    searchHistory.isVisible = s?.isEmpty() == true && historyVisibility(searchHistoryEx)
+                    isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
                     somethingWrongVisibility()
                 }
             },
@@ -147,7 +148,7 @@ class SearchActivity : AppCompatActivity(){
                 }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                searchHistory.isVisible = s?.isEmpty() == true && historyVisibility(searchHistoryEx)
+                isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
             }
         )
 
@@ -240,5 +241,11 @@ class SearchActivity : AppCompatActivity(){
         searchList.isVisible = true
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun isHistoryVisible (i: Boolean){
+        historyTitle.isVisible = i
+        historyList.isVisible = i
+        clearHistoryButton.isVisible = i
     }
 }
