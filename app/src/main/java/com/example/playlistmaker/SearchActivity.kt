@@ -2,13 +2,14 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity(){
 
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val SEARCH_STRING = "SEARCH_STRING"
+        const val SOME_TEXT = ""
+    }
+
     var saveSearchText:String = SOME_TEXT
     private val baseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
@@ -33,6 +40,8 @@ class SearchActivity : AppCompatActivity(){
     private var historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
     private var songsList = mutableListOf<SongData>()
     private val songsAdapter = SongsAdapter(songsList)
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { searchTrack()}
 
     private lateinit var searchText: EditText
     private lateinit var clearButton: Button
@@ -42,13 +51,13 @@ class SearchActivity : AppCompatActivity(){
     private lateinit var clearHistoryButton: Button
     private lateinit var searchList: RecyclerView
     private lateinit var historyList: RecyclerView
-    private lateinit var searchHistory: LinearLayout
     private lateinit var backImage: ImageView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var historyTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
 
         val historySharedPrefs = getSharedPreferences(App.HISTORY_LIST, MODE_PRIVATE)
         val searchHistoryEx = SearchHistory(historySharedPrefs)
@@ -65,22 +74,22 @@ class SearchActivity : AppCompatActivity(){
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchList = findViewById(R.id.search_recyclerView)
         historyList = findViewById(R.id.history_recyclerView)
-        searchHistory = findViewById(R.id.search_history)
         backImage = findViewById(R.id.back_search)
+        progressBar = findViewById(R.id.progress)
+        historyTitle = findViewById(R.id.history_title)
 
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        searchHistoryEx.historyVisibility(
-            searchHistoryEx.readHistoryList().toMutableList().isEmpty(), searchHistory
-        )
+        isHistoryVisible(searchHistoryEx.readHistoryList().toMutableList().isNotEmpty())
 
         backImage.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistoryEx.clearHistory(searchHistory)
+            searchHistoryEx.clearHistory()
+            isHistoryVisible(false)
         }
 
         if (savedInstanceState != null) {
@@ -121,32 +130,28 @@ class SearchActivity : AppCompatActivity(){
             afterTextChanged = { s: Editable? ->
                 if (s.toString().isEmpty()) {
                     searchList.isVisible = false
-                    searchHistory.isVisible = s?.isEmpty() == true && historyVisibility(searchHistoryEx)
+                    isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
                     somethingWrongVisibility()
                 }
             },
 
             onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
+                searchList.isVisible = false
+                progressBar.isVisible = false
+                searchDebounce()
+                if (s.toString().isEmpty()){
+                    handler.removeCallbacks(searchRunnable)
+                }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                searchHistory.isVisible = s?.isEmpty() == true && historyVisibility(searchHistoryEx)
+                isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
             }
         )
 
         searchText.setOnFocusChangeListener{ _, hasFocus ->
             if(hasFocus) {
-                searchList.visibility = View.VISIBLE
+                searchList.isVisible = true
             }
-        }
-
-        searchText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchTrack()
-                songsList.clear()
-                searchHistory.visibility = View.GONE
-                searchList.visibility = View.VISIBLE
-            }
-                false
         }
     }
 
@@ -155,16 +160,12 @@ class SearchActivity : AppCompatActivity(){
         outState.putString(SEARCH_STRING, saveSearchText)
     }
 
-    companion object{
-        const val SEARCH_STRING = "SEARCH_STRING"
-        const val SOME_TEXT = ""
-    }
-
     private fun clearSearchButtonVisibility(s: CharSequence?): Boolean {
         return s.isNullOrEmpty()
     }
 
         private fun searchTrack (){
+            progressBar.isVisible = true
             somethingWrongVisibility()
         searchAPI
             .search(searchText.text.toString())
@@ -177,6 +178,7 @@ class SearchActivity : AppCompatActivity(){
                         songsList.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
                             songsList.addAll(response.body()?.results!!)
+                            progressBar.isVisible = false
                             songsAdapter.notifyDataSetChanged()
                         }
                         if (songsList.isEmpty()){
@@ -194,6 +196,7 @@ class SearchActivity : AppCompatActivity(){
     }
 
     private fun showMessage(text: String, additionalMessage: String, internetError: Boolean) {
+        progressBar.isVisible = false
         if (internetError) {
             somethingWrongText.visibility = View.VISIBLE
             somethingWrongImage.visibility = View.VISIBLE
@@ -227,5 +230,18 @@ class SearchActivity : AppCompatActivity(){
     private fun historyVisibility (ex: SearchHistory):Boolean{
         return ex.readHistoryList()
             .isNotEmpty()
+    }
+
+    private fun searchDebounce() {
+        songsList.clear()
+        searchList.isVisible = true
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun isHistoryVisible (i: Boolean){
+        historyTitle.isVisible = i
+        historyList.isVisible = i
+        clearHistoryButton.isVisible = i
     }
 }

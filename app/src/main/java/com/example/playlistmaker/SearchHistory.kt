@@ -20,14 +20,6 @@ class SearchHistory (val sharedPreferences: SharedPreferences) {
             .apply()
     }
 
-    fun historyVisibility(isEmpty: Boolean, linearLayout: LinearLayout){
-        if (isEmpty){
-            linearLayout.visibility = View.GONE
-        } else {
-            linearLayout.visibility = View.VISIBLE
-        }
-    }
-
     fun listForAdapter(list1: MutableList<SongData>, list2: MutableList<SongData>):MutableList<SongData>{
         if (list1.isEmpty() && list2.isNotEmpty()
             ||
@@ -49,11 +41,10 @@ class SearchHistory (val sharedPreferences: SharedPreferences) {
         }
     }
 
-    fun clearHistory (linearLayout: LinearLayout){
+    fun clearHistory (){
         SongsAdapter.searchHistory.clear()
         sharedPreferences.edit()
             .clear()
             .apply()
-        linearLayout.visibility = View.GONE
     }
 }

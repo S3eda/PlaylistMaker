@@ -130,7 +130,7 @@
 
     <style name="clearHistory_button_style" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">@dimen/clearHistory_button_width</item>
-        <item name="android:layout_height">@dimen/clearHistory_button_height</item>
+        <item name="android:layout_height">36dp</item>
         <item name="android:backgroundTint">@color/black</item>
         <item name="android:paddingHorizontal">0dp</item>
         <item name="android:text">@string/clear_history</item>
@@ -138,7 +138,7 @@
         <item name="android:textSize">@dimen/clearHistory_button_textSize</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetTop">0dp</item>
-        <item name="android:layout_marginTop">@dimen/clearHistory_button_marginTop</item>
+        <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="cornerRadius">@dimen/clearHistory_button_cornerRadius</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
