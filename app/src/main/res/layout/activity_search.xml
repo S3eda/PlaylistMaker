@@ -133,37 +133,48 @@
         android:id="@+id/history_title"
         style="@style/textStyle_YSmedium_500"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/search_history"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_max="52dp"
         android:layout_gravity="center_horizontal"
-        android:textSize="19sp"
-        android:textColor="@color/black"
+        android:layout_marginTop="24dp"
         android:gravity="center"
-        android:visibility="gone"
+        android:text="@string/search_history"
+        android:textColor="@color/black"
+        android:textSize="19sp"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/search_editText"
-        app:layout_constraintStart_toEndOf="@id/left_search_line"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/history_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_weight="1"
         app:layout_constraintTop_toBottomOf="@id/history_title"
-        app:layout_constraintStart_toEndOf="@id/left_search_line"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/clear_history_button"
-        android:visibility="gone"
         style="@style/clearHistory_button_style"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_gravity="bottom"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/history_recyclerView"
-        app:layout_constraintStart_toEndOf="@id/left_search_line"
-        app:layout_constraintEnd_toStartOf="@id/right_search_line"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rbottom_search_line"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.05"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rbottom_search_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="16dp"/>
+
 
     <ImageView
         android:id="@+id/something_wrong_image"

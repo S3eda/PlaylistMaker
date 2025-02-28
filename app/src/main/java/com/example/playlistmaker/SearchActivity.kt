@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -52,7 +51,6 @@ class SearchActivity : AppCompatActivity(){
     private lateinit var clearHistoryButton: Button
     private lateinit var searchList: RecyclerView
     private lateinit var historyList: RecyclerView
-    //private lateinit var searchHistory: LinearLayout
     private lateinit var backImage: ImageView
     private lateinit var progressBar: ProgressBar
     private lateinit var historyTitle: TextView
@@ -60,7 +58,6 @@ class SearchActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
 
         val historySharedPrefs = getSharedPreferences(App.HISTORY_LIST, MODE_PRIVATE)
         val searchHistoryEx = SearchHistory(historySharedPrefs)
@@ -77,7 +74,6 @@ class SearchActivity : AppCompatActivity(){
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchList = findViewById(R.id.search_recyclerView)
         historyList = findViewById(R.id.history_recyclerView)
-        //searchHistory = findViewById(R.id.search_history)
         backImage = findViewById(R.id.back_search)
         progressBar = findViewById(R.id.progress)
         historyTitle = findViewById(R.id.history_title)
