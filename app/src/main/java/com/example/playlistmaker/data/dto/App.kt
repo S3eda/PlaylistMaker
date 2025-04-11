@@ -1,7 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.Creator
 
 class App:Application() {
 
@@ -16,6 +17,9 @@ class App:Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Creator.initContext(this)
+
         val sharedPrefs = getSharedPreferences(PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(THEME_KEY, false)
         switchTheme(darkTheme)

@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +16,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.network.SearchAPI
+import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.domain.models.SongData
+import com.example.playlistmaker.presentation.SongsAdapter
+import com.example.playlistmaker.data.network.SongsResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,7 +45,6 @@ class SearchActivity : AppCompatActivity(){
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val searchAPI = retrofit.create(SearchAPI::class.java)
-    private var historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
     private var songsList = mutableListOf<SongData>()
     private val songsAdapter = SongsAdapter(songsList)
     private val handler = Handler(Looper.getMainLooper())
@@ -59,12 +66,7 @@ class SearchActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val historySharedPrefs = getSharedPreferences(App.HISTORY_LIST, MODE_PRIVATE)
-        val searchHistoryEx = SearchHistory(historySharedPrefs)
-        historySharedPrefs.registerOnSharedPreferenceChangeListener { _, _ ->
-            historyAdapter.notifyDataSetChanged()
-        }
-        searchHistoryEx.completionOfSongAdapterSearchHistory(searchHistoryEx)
+        val historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
@@ -81,14 +83,14 @@ class SearchActivity : AppCompatActivity(){
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        isHistoryVisible(searchHistoryEx.readHistoryList().toMutableList().isNotEmpty())
+        isHistoryVisible(Creator.provideSongSearchHistoryInteractor().readHistory().toMutableList().isNotEmpty())
 
         backImage.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistoryEx.clearHistory()
+            Creator.provideSongSearchHistoryInteractor().clearHistory()
             isHistoryVisible(false)
         }
 
@@ -116,21 +118,13 @@ class SearchActivity : AppCompatActivity(){
 
         searchText.addTextChangedListener(
             beforeTextChanged = {s: CharSequence?, p1: Int, p2: Int, p3: Int ->
-                val listForHistoryAdapter = searchHistoryEx
-                    .listForAdapter(
-                        searchHistoryEx
-                            .readHistoryList()
-                            .toMutableList(),
-                        SongsAdapter.searchHistory
-                    )
-                val historyAdapter = SongsAdapter(listForHistoryAdapter)
                 historyAdapter.notifyDataSetChanged()
             },
 
             afterTextChanged = { s: Editable? ->
                 if (s.toString().isEmpty()) {
                     searchList.isVisible = false
-                    isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
+                    isHistoryVisible(s?.isEmpty() == true && Creator.provideSongSearchHistoryInteractor().readHistory().isNotEmpty())
                     somethingWrongVisibility()
                 }
             },
@@ -144,7 +138,7 @@ class SearchActivity : AppCompatActivity(){
                 }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
+                isHistoryVisible(s?.isEmpty() == true && Creator.provideSongSearchHistoryInteractor().readHistory().isNotEmpty())
             }
         )
 
@@ -225,11 +219,6 @@ class SearchActivity : AppCompatActivity(){
         somethingWrongText.visibility = View.GONE
         somethingWrongImage.visibility = View.GONE
         refreshButton.visibility = View.GONE
-    }
-
-    private fun historyVisibility (ex: SearchHistory):Boolean{
-        return ex.readHistoryList()
-            .isNotEmpty()
     }
 
     private fun searchDebounce() {

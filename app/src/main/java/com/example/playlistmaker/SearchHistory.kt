@@ -1,14 +1,14 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
-import android.view.View
-import android.widget.LinearLayout
-import com.example.playlistmaker.App.Companion.HISTORY_KEY
+import com.example.playlistmaker.data.dto.App.Companion.HISTORY_KEY
+import com.example.playlistmaker.domain.models.SongData
+import com.example.playlistmaker.presentation.SongsAdapter
 import com.google.gson.Gson
 
 class SearchHistory (val sharedPreferences: SharedPreferences) {
 
-    fun readHistoryList():Array<SongData>{
+    /*fun readHistoryList():Array<SongData>{
         val json = sharedPreferences.getString(HISTORY_KEY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<SongData>::class.java)
     }
@@ -46,5 +46,5 @@ class SearchHistory (val sharedPreferences: SharedPreferences) {
         sharedPreferences.edit()
             .clear()
             .apply()
-    }
+    }*/
 }

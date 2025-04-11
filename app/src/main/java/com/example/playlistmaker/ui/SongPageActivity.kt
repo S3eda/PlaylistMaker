@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -10,6 +10,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.data.dto.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.domain.models.SongData
+import com.example.playlistmaker.presentation.SongsAdapter
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -46,9 +52,6 @@ class SongPageActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_song_page)
-        val historySharedPrefs = getSharedPreferences(App.HISTORY_LIST, MODE_PRIVATE)
-        val searchHistoryEx = SearchHistory(historySharedPrefs)
-        searchHistoryEx.writeHistoryList(SongsAdapter.searchHistory.toTypedArray())
 
         songName = findViewById(R.id.song_name)
         groupName = findViewById(R.id.group_name)

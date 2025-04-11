@@ -1,10 +1,13 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.domain.models.SongData
+import com.example.playlistmaker.ui.SongPageActivity
 import com.google.gson.Gson
 
 class SongsAdapter (
@@ -12,7 +15,7 @@ class SongsAdapter (
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
     companion object{
-        var searchHistory = mutableListOf<SongData>()
+        val searchHistory = Creator.provideSongSearchHistoryInteractor().readHistory().toMutableList()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
@@ -41,6 +44,7 @@ class SongsAdapter (
                         searchHistory.clear()
                         searchHistory.addAll(subList)
                         subList.clear()
+                        Creator.provideSongSearchHistoryInteractor().writeHistory(searchHistory.toTypedArray())
                         notifyDataSetChanged()
                     }
 
@@ -49,12 +53,14 @@ class SongsAdapter (
                         searchHistory.reverse()
                         searchHistory.add(data[position])
                         searchHistory.reverse()
+                        Creator.provideSongSearchHistoryInteractor().writeHistory(searchHistory.toTypedArray())
                     }
 
                     else -> {
                         searchHistory.reverse()
                         searchHistory.add(data[position])
                         searchHistory.reverse()
+                        Creator.provideSongSearchHistoryInteractor().writeHistory(searchHistory.toTypedArray())
                     }
                 }
             }
