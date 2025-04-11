@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.network
+package com.example.playlistmaker.data.dto
 
 import com.example.playlistmaker.domain.models.SongData
 

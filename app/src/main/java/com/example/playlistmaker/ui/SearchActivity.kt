@@ -17,13 +17,11 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.network.SearchAPI
-import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.presentation.SongsAdapter
-import com.example.playlistmaker.data.network.SongsResponse
+import com.example.playlistmaker.data.dto.SongsResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
