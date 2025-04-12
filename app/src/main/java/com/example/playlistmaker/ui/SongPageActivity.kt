@@ -1,9 +1,6 @@
 package com.example.playlistmaker.ui
 
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -42,9 +39,6 @@ class SongPageActivity : AppCompatActivity(){
     private lateinit var songURI: String
 
     private var playerState = PLAYER_STATE_DEFAULT
-    private val handler = Handler(Looper.getMainLooper())
-    private val DELAY = 1000L
-    //private val mediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,8 +61,7 @@ class SongPageActivity : AppCompatActivity(){
         val songInformation = intent.extras?.get("SONG_INFORMATION").toString()
         val songExemp = Gson().fromJson(songInformation, SongData::class.java)
         songURI = songExemp.previewUrl
-        //preparePlayer()
-        Creator.providePlayerInteractor().preparePlayer(songURI)
+        Creator.providePlayerInteractor().preparePlayer(songURI, playButton, progress)
 
         songName.text = songExemp.trackName
         groupName.text = songExemp.artistName
@@ -91,51 +84,20 @@ class SongPageActivity : AppCompatActivity(){
 
         playButton.setOnClickListener{
             playbackControl()
-            startTimer(0L)
+            Creator.providePlayerInteractor().startTimer(0L, progress)
         }
     }
 
     override fun onPause() {
         Creator.providePlayerInteractor().pausePlayer()
-        //pausePlayer()
         playButton.setImageResource(R.drawable.play_button)
         super.onPause()
     }
 
     override fun onDestroy() {
-        handler.removeCallbacksAndMessages(null)
         Creator.providePlayerInteractor().stopPlayer()
-        //mediaPlayer.release()
         super.onDestroy()
     }
-
-    /*private fun preparePlayer() {
-        mediaPlayer.setDataSource(songURI)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = PLAYER_STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = PLAYER_STATE_PREPARED
-            playButton.setImageResource(R.drawable.play_button)
-            progress.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
-        }
-    }*/
-
-    /*private fun startPlayer() {
-        /*Creator.providePlayerInteractor().startPlayer()
-        playerState = Creator.providePlayerInteractor().playerStatus()*/
-        mediaPlayer.start()
-        playerState = PLAYER_STATE_PLAYING
-    }
-
-    private fun pausePlayer() {
-        /*Creator.providePlayerInteractor().pausePlayer()
-        playerState = Creator.providePlayerInteractor().playerStatus()*/
-        mediaPlayer.pause()
-        playerState = PLAYER_STATE_PAUSED
-    }*/
 
     private fun playbackControl() {
         playerState = Creator.providePlayerInteractor().playerStatus()
@@ -143,35 +105,12 @@ class SongPageActivity : AppCompatActivity(){
             PLAYER_STATE_PLAYING -> {
                 Creator.providePlayerInteractor().pausePlayer()
                 playerState = Creator.providePlayerInteractor().playerStatus()
-                //pausePlayer()
                 playButton.setImageResource(R.drawable.play_button)
             }
             PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED  -> {
                 Creator.providePlayerInteractor().startPlayer()
                 playerState = Creator.providePlayerInteractor().playerStatus()
-                //startPlayer()
                 playButton.setImageResource(R.drawable.pause)
-            }
-        }
-    }
-
-    private fun startTimer(duration: Long) {
-        handler.post(
-            createUpdateTimerTask(duration)
-        )
-    }
-
-    private fun createUpdateTimerTask(duration: Long): Runnable {
-        return object : Runnable {
-            override fun run() {
-                //val timeLeft = mediaPlayer.getCurrentPosition()
-                val remainingTime = duration //+ timeLeft
-
-                if (playerState == 2 && remainingTime < 30000L) {
-                    val seconds = remainingTime / DELAY
-                    progress.text = String.format("%02d:%02d", seconds / 60, seconds % 60)
-                    handler.postDelayed(this, DELAY / 3)
-                }
             }
         }
     }
