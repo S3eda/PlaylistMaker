@@ -37,16 +37,17 @@ class PlayerRepositoryImpl(): PlayerRepository {
     override fun preparePlayer(uri: String, button: ImageButton, text: TextView) {
         mediaPlayer.setDataSource(uri)
         mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener{
+        mediaPlayer.setOnPreparedListener {
             button.isEnabled = true
             player = PLAYER_STATE_PREPARED
         }
-        mediaPlayer.setOnCompletionListener{
+        mediaPlayer.setOnCompletionListener {
             player = PLAYER_STATE_PREPARED
             button.setImageResource(R.drawable.play_button)
             text.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
         }
     }
+
 
     override fun playerStatus(): Int {
         return player

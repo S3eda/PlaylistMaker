@@ -18,15 +18,10 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.network.SearchAPI
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.presentation.SongsAdapter
-import com.example.playlistmaker.data.dto.SongsResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.playlistmaker.domain.Consumer.Consumer
+import com.example.playlistmaker.domain.Consumer.ConsumerData
 
 class SearchActivity : AppCompatActivity(){
 
@@ -36,13 +31,9 @@ class SearchActivity : AppCompatActivity(){
         const val SOME_TEXT = ""
     }
 
+    private val searchSongUseCase = Creator.provideSearchUseCase()
+
     var saveSearchText:String = SOME_TEXT
-    private val baseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val searchAPI = retrofit.create(SearchAPI::class.java)
     private var songsList = mutableListOf<SongData>()
     private val songsAdapter = SongsAdapter(songsList)
     private val handler = Handler(Looper.getMainLooper())
@@ -131,9 +122,6 @@ class SearchActivity : AppCompatActivity(){
                 searchList.isVisible = false
                 progressBar.isVisible = false
                 searchDebounce()
-                if (s.toString().isEmpty()){
-                    handler.removeCallbacks(searchRunnable)
-                }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
                 isHistoryVisible(s?.isEmpty() == true && Creator.provideSongSearchHistoryInteractor().readHistory().isNotEmpty())
@@ -147,6 +135,42 @@ class SearchActivity : AppCompatActivity(){
         }
     }
 
+    fun searchTrack() {
+        progressBar.isVisible = true
+        somethingWrongVisibility()
+        songsList.clear()
+        searchSongUseCase.execute(
+            searchText.text.toString(),
+            consumer = object : Consumer<List<SongData>> {
+                override fun consume(data: ConsumerData<List<SongData>>) {
+                    handler.post {
+                        when (data) {
+                            is ConsumerData.Error -> showMessage(
+                                getString(R.string.trouble_with_internet),
+                                data.message,
+                                true
+                            )
+
+                            is ConsumerData.Data -> {
+                                if (data.value.toMutableList().isEmpty()) {
+                                    showMessage(
+                                        getString(R.string.empty_search_result),
+                                        "",
+                                        false
+                                    )
+                                } else {
+                                    songsList.addAll(data.value.toMutableList())
+                                    progressBar.isVisible = false
+                                    songsAdapter.notifyDataSetChanged()
+                                    searchList.isVisible = true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_STRING, saveSearchText)
@@ -154,37 +178,6 @@ class SearchActivity : AppCompatActivity(){
 
     private fun clearSearchButtonVisibility(s: CharSequence?): Boolean {
         return s.isNullOrEmpty()
-    }
-
-        private fun searchTrack (){
-            progressBar.isVisible = true
-            somethingWrongVisibility()
-        searchAPI
-            .search(searchText.text.toString())
-            .enqueue(object: Callback<SongsResponse> {
-                override fun onResponse(
-                    call: Call<SongsResponse>,
-                    response: Response<SongsResponse>
-                ) {
-                    if (response.code() == 200) {
-                        songsList.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            songsList.addAll(response.body()?.results!!)
-                            progressBar.isVisible = false
-                            songsAdapter.notifyDataSetChanged()
-                        }
-                        if (songsList.isEmpty()){
-                            showMessage(getString(R.string.empty_search_result), "", false)
-                        }
-                    } else {
-                        showMessage(getString(R.string.trouble_with_internet), "", true)
-                    }
-                }
-
-                override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
-                    showMessage(getString(R.string.trouble_with_internet), "", true)
-                }
-            })
     }
 
     private fun showMessage(text: String, additionalMessage: String, internetError: Boolean) {
