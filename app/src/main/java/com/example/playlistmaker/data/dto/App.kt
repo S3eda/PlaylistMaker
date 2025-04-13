@@ -20,7 +20,7 @@ class App:Application() {
 
         Creator.initContext(this)
 
-        val sharedPrefs = getSharedPreferences(PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
+        val sharedPrefs = Creator.getSharedPrefs(this, PLAYLISTMAKER_THEME_MODE)//getSharedPreferences(PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(THEME_KEY, false)
         switchTheme(darkTheme)
     }

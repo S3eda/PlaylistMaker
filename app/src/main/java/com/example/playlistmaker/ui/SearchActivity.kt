@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -29,10 +28,10 @@ class SearchActivity : AppCompatActivity(){
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val SEARCH_STRING = "SEARCH_STRING"
         const val SOME_TEXT = ""
+        val searchHistoryInteractor = Creator.provideSongSearchHistoryInteractor()
     }
 
     private val searchSongUseCase = Creator.provideSearchUseCase()
-    private val searchHistoryInteractor = Creator.provideSongSearchHistoryInteractor()
 
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
@@ -122,7 +121,9 @@ class SearchActivity : AppCompatActivity(){
                 searchList.isVisible = false
                 progressBar.isVisible = false
                 somethingWrongVisibility(false)
-                searchDebounce()
+                if(!s.isNullOrEmpty()) {
+                    searchDebounce()
+                }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
                 isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readHistory().isNotEmpty())

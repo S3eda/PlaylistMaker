@@ -1,6 +1,9 @@
 package com.example.playlistmaker
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.playlistmaker.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.data.impl.SearchRepositoryImpl
 import com.example.playlistmaker.data.impl.SongSearchHistoryRepositoryImpl
@@ -18,6 +21,10 @@ import com.example.playlistmaker.domain.useCase.SearchSongUseCase
 object Creator {
 
     lateinit var context: Application
+
+    fun getSharedPrefs(context: Context, key: String):SharedPreferences{
+        return context.getSharedPreferences(key, MODE_PRIVATE)
+    }
 
     private fun getSongSearchHistoryRepository(): SongSearchHistoryRepository{
         return SongSearchHistoryRepositoryImpl(context)

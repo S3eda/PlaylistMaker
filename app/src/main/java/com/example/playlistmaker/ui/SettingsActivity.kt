@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -51,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val changeTheme = findViewById<SwitchMaterial>(R.id.theme_switch)
-        val themeSharedPrefs = getSharedPreferences(App.PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
+        val themeSharedPrefs = Creator.getSharedPrefs(this, App.PLAYLISTMAKER_THEME_MODE)
         val darkTheme = themeSharedPrefs.getBoolean(App.THEME_KEY, false)
         changeTheme.isChecked = darkTheme
         changeTheme.setOnCheckedChangeListener { _, checked ->
