@@ -6,16 +6,20 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.playlistmaker.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.data.impl.SearchRepositoryImpl
-import com.example.playlistmaker.data.impl.SongSearchHistoryRepositoryImpl
+import com.example.playlistmaker.data.impl.SettingsExternalNavigationRepositoryImpl
+import com.example.playlistmaker.data.impl.SharedPrefsRepositoryImpl
 import com.example.playlistmaker.data.network.NetworkClientImpl
 import com.example.playlistmaker.data.network.NetworkClient
 import com.example.playlistmaker.domain.impl.PlayerInteractorImpl
-import com.example.playlistmaker.domain.impl.SongSearchHistoryInteractorImpl
+import com.example.playlistmaker.domain.impl.SettingsExternalNavigationInteractorImpl
+import com.example.playlistmaker.domain.impl.SharedPrefsInteractorImpl
 import com.example.playlistmaker.domain.interactor.PlayerInteractor
-import com.example.playlistmaker.domain.interactor.SongSearchHistoryInteractor
+import com.example.playlistmaker.domain.interactor.SettingsExternalNavigationInteractor
+import com.example.playlistmaker.domain.interactor.SharedPrefsInteractor
 import com.example.playlistmaker.domain.repository.PlayerRepository
 import com.example.playlistmaker.domain.repository.SearchRepository
-import com.example.playlistmaker.domain.repository.SongSearchHistoryRepository
+import com.example.playlistmaker.domain.repository.SettingsExternalNavigationRepository
+import com.example.playlistmaker.domain.repository.SharedPrefsRepository
 import com.example.playlistmaker.domain.useCase.SearchSongUseCase
 
 object Creator {
@@ -26,12 +30,12 @@ object Creator {
         return context.getSharedPreferences(key, MODE_PRIVATE)
     }
 
-    private fun getSongSearchHistoryRepository(): SongSearchHistoryRepository{
-        return SongSearchHistoryRepositoryImpl(context)
+    private fun getSharedPrefsRepository(key: String): SharedPrefsRepository{
+        return SharedPrefsRepositoryImpl(context, key)
     }
 
-    fun provideSongSearchHistoryInteractor(): SongSearchHistoryInteractor{
-        return SongSearchHistoryInteractorImpl(getSongSearchHistoryRepository())
+    fun provideSharedPrefsInteractor(key: String): SharedPrefsInteractor{
+        return SharedPrefsInteractorImpl(getSharedPrefsRepository(key))
     }
 
     fun initContext(cont: Application){
@@ -56,5 +60,17 @@ object Creator {
 
     private fun provideNetworkClient(): NetworkClient{
         return NetworkClientImpl()
+    }
+
+    private fun getSettingsExternalNavigationRepository(
+    ): SettingsExternalNavigationRepository{
+        return SettingsExternalNavigationRepositoryImpl()
+    }
+
+    fun provideSettingsExternalNavigationInteractor(
+    ):SettingsExternalNavigationInteractor{
+        return SettingsExternalNavigationInteractorImpl(
+            getSettingsExternalNavigationRepository()
+        )
     }
 }

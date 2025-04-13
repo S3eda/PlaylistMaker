@@ -16,7 +16,7 @@ class SongsAdapter (
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
     companion object{
-        var searchHistory = SearchActivity.searchHistoryInteractor.readHistory().toMutableList()
+        var searchHistory = SearchActivity.searchHistoryInteractor.readSongHistory().toMutableList()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
@@ -46,7 +46,7 @@ class SongsAdapter (
                         searchHistory.clear()
                         searchHistory.addAll(subList)
                         subList.clear()
-                        interactor.writeHistory(searchHistory.toTypedArray())
+                        interactor.writeSongHistory(searchHistory.toTypedArray())
                         notifyDataSetChanged()
                     }
 
@@ -55,14 +55,14 @@ class SongsAdapter (
                         searchHistory.reverse()
                         searchHistory.add(data[position])
                         searchHistory.reverse()
-                        interactor.writeHistory(searchHistory.toTypedArray())
+                        interactor.writeSongHistory(searchHistory.toTypedArray())
                     }
 
                     else -> {
                         searchHistory.reverse()
                         searchHistory.add(data[position])
                         searchHistory.reverse()
-                        interactor.writeHistory(searchHistory.toTypedArray())
+                        interactor.writeSongHistory(searchHistory.toTypedArray())
                     }
                 }
             }

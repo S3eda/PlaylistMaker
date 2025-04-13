@@ -11,10 +11,15 @@ import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 
+private val THEME_KEY = "theme_key"
+
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        val settingsNavigation = Creator.provideSettingsExternalNavigationInteractor()
+        val sharedPrefsInteractor = Creator.provideSharedPrefsInteractor(THEME_KEY)
 
         val backImage = findViewById<ImageView>(R.id.back)
         backImage.setOnClickListener{
@@ -23,42 +28,39 @@ class SettingsActivity : AppCompatActivity() {
 
         val share = findViewById<TextView>(R.id.share)
         share.setOnClickListener{
-            val link: String = getString(R.string.practicum)
-            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, link)
-            }
-            startActivity(Intent.createChooser(shareIntent, null))
+            startActivity(Intent
+                .createChooser(
+                    settingsNavigation
+                        .share(getString(R.string.practicum)),
+                    null)
+            )
         }
 
         val support = findViewById<TextView>(R.id.support)
         support.setOnClickListener{
-            val subjectForDev = getString(R.string.for_dev)
-            val massageForDev = getString(R.string.thanks_dev)
-            val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.dev_email)))
-                putExtra(Intent.EXTRA_SUBJECT, subjectForDev)
-                putExtra(Intent.EXTRA_TEXT, massageForDev)
-            }
-            startActivity(supportIntent)
+            startActivity(
+                settingsNavigation.support(
+                    getString(R.string.for_dev),
+                    getString(R.string.thanks_dev)
+                )
+            )
         }
 
         val usersAgreement = findViewById<TextView>(R.id.usersAgreement)
         usersAgreement.setOnClickListener{
-            val usersAgreementLink = getString(R.string.users_agreement_link)
-            val agreementIntent = Intent(Intent.ACTION_VIEW, Uri.parse(usersAgreementLink))
-            startActivity(agreementIntent)
+            startActivity(
+                settingsNavigation
+                    .userAgreements(
+                        getString(R.string.users_agreement_link)
+                    )
+            )
         }
 
         val changeTheme = findViewById<SwitchMaterial>(R.id.theme_switch)
-        val themeSharedPrefs = Creator.getSharedPrefs(this, App.PLAYLISTMAKER_THEME_MODE)
-        val darkTheme = themeSharedPrefs.getBoolean(App.THEME_KEY, false)
+        val darkTheme = sharedPrefsInteractor.readSettings()
         changeTheme.isChecked = darkTheme
         changeTheme.setOnCheckedChangeListener { _, checked ->
-            themeSharedPrefs.edit()
-                .putBoolean(App.THEME_KEY, checked)
-                .apply()
+            sharedPrefsInteractor.writeSettings(checked)
             (applicationContext as App).switchTheme(checked)
         }
     }

@@ -28,7 +28,8 @@ class SearchActivity : AppCompatActivity(){
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val SEARCH_STRING = "SEARCH_STRING"
         const val SOME_TEXT = ""
-        val searchHistoryInteractor = Creator.provideSongSearchHistoryInteractor()
+        const val HISTORY_KEY = "history_key"
+        val searchHistoryInteractor = Creator.provideSharedPrefsInteractor(HISTORY_KEY)
     }
 
     private val searchSongUseCase = Creator.provideSearchUseCase()
@@ -72,14 +73,14 @@ class SearchActivity : AppCompatActivity(){
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        isHistoryVisible(searchHistoryInteractor.readHistory().toMutableList().isNotEmpty())
+        isHistoryVisible(searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty())
 
         backImage.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistoryInteractor.clearHistory()
+            searchHistoryInteractor.clearSongHistory()
             isHistoryVisible(false)
         }
 
@@ -113,7 +114,7 @@ class SearchActivity : AppCompatActivity(){
             afterTextChanged = { s: Editable? ->
                 if (s.toString().isEmpty()) {
                     searchList.isVisible = false
-                    isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readHistory().isNotEmpty())
+                    isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readSongHistory().isNotEmpty())
                 }
             },
 
@@ -126,7 +127,7 @@ class SearchActivity : AppCompatActivity(){
                 }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readHistory().isNotEmpty())
+                isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readSongHistory().isNotEmpty())
             }
         )
 

@@ -9,8 +9,6 @@ class App:Application() {
     companion object {
         const val PLAYLISTMAKER_THEME_MODE = "playlistmaker_theme_mode"
         const val THEME_KEY = "theme_key"
-        const val HISTORY_KEY = "history_key"
-        const val HISTORY_LIST = "history_list"
     }
 
     var darkTheme = false
@@ -20,7 +18,7 @@ class App:Application() {
 
         Creator.initContext(this)
 
-        val sharedPrefs = Creator.getSharedPrefs(this, PLAYLISTMAKER_THEME_MODE)//getSharedPreferences(PLAYLISTMAKER_THEME_MODE, MODE_PRIVATE)
+        val sharedPrefs = Creator.getSharedPrefs(this, THEME_KEY)
         darkTheme = sharedPrefs.getBoolean(THEME_KEY, false)
         switchTheme(darkTheme)
     }
