@@ -15,9 +15,10 @@ private val PLAYER_STATE_PAUSED = 3
 private var player = PLAYER_STATE_DEFAULT
 private val handler = Handler(Looper.getMainLooper())
 private val DELAY = 1000L
-private val mediaPlayer = MediaPlayer()
 
 class PlayerRepositoryImpl(): PlayerRepository {
+
+    private val mediaPlayer = MediaPlayer()
 
     override fun startPlayer(){
         mediaPlayer.start()
@@ -25,13 +26,16 @@ class PlayerRepositoryImpl(): PlayerRepository {
     }
 
     override fun pausePlayer() {
-        mediaPlayer.pause()
-        player = PLAYER_STATE_PAUSED
+        if(mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
+            player = PLAYER_STATE_PAUSED
+        }
     }
 
     override fun stopPlayer() {
         handler.removeCallbacksAndMessages(null)
         mediaPlayer.release()
+        player = PLAYER_STATE_DEFAULT
     }
 
     override fun preparePlayer(uri: String, button: ImageButton, text: TextView) {

@@ -37,7 +37,7 @@ class SongPageActivity : AppCompatActivity(){
     private lateinit var likeButton:ImageButton
     private lateinit var playlistButton:ImageButton
     private lateinit var songURI: String
-
+    private val playerInteractor = Creator.providePlayerInteractor()
     private var playerState = PLAYER_STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,8 @@ class SongPageActivity : AppCompatActivity(){
         val songInformation = intent.extras?.get("SONG_INFORMATION").toString()
         val songExemp = Gson().fromJson(songInformation, SongData::class.java)
         songURI = songExemp.previewUrl
-        Creator.providePlayerInteractor().preparePlayer(songURI, playButton, progress)
+
+        playerInteractor.preparePlayer(songURI, playButton, progress)
 
         songName.text = songExemp.trackName
         groupName.text = songExemp.artistName
@@ -84,32 +85,32 @@ class SongPageActivity : AppCompatActivity(){
 
         playButton.setOnClickListener{
             playbackControl()
-            Creator.providePlayerInteractor().startTimer(0L, progress)
+            playerInteractor.startTimer(0L, progress)
         }
     }
 
     override fun onPause() {
-        Creator.providePlayerInteractor().pausePlayer()
+        playerInteractor.pausePlayer()
         playButton.setImageResource(R.drawable.play_button)
         super.onPause()
     }
 
     override fun onDestroy() {
-        Creator.providePlayerInteractor().stopPlayer()
+        playerInteractor.stopPlayer()
         super.onDestroy()
     }
 
     private fun playbackControl() {
-        playerState = Creator.providePlayerInteractor().playerStatus()
+        playerState =  playerInteractor.playerStatus()
         when(playerState) {
             PLAYER_STATE_PLAYING -> {
-                Creator.providePlayerInteractor().pausePlayer()
-                playerState = Creator.providePlayerInteractor().playerStatus()
+                playerInteractor.pausePlayer()
+                playerState =  playerInteractor.playerStatus()
                 playButton.setImageResource(R.drawable.play_button)
             }
             PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED  -> {
-                Creator.providePlayerInteractor().startPlayer()
-                playerState = Creator.providePlayerInteractor().playerStatus()
+                playerInteractor.startPlayer()
+                playerState =  playerInteractor.playerStatus()
                 playButton.setImageResource(R.drawable.pause)
             }
         }

@@ -32,6 +32,7 @@ class SearchActivity : AppCompatActivity(){
     }
 
     private val searchSongUseCase = Creator.provideSearchUseCase()
+    private val searchHistoryInteractor = Creator.provideSongSearchHistoryInteractor()
 
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
@@ -72,14 +73,14 @@ class SearchActivity : AppCompatActivity(){
         searchList.adapter = songsAdapter
         historyList.adapter = historyAdapter
 
-        isHistoryVisible(Creator.provideSongSearchHistoryInteractor().readHistory().toMutableList().isNotEmpty())
+        isHistoryVisible(searchHistoryInteractor.readHistory().toMutableList().isNotEmpty())
 
         backImage.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            Creator.provideSongSearchHistoryInteractor().clearHistory()
+            searchHistoryInteractor.clearHistory()
             isHistoryVisible(false)
         }
 
@@ -92,11 +93,11 @@ class SearchActivity : AppCompatActivity(){
             searchText.setText("")
             songsList.clear()
             songsAdapter.notifyDataSetChanged()
-            somethingWrongVisibility()
+            somethingWrongVisibility(false)
         }
 
         refreshButton.setOnClickListener {
-            somethingWrongVisibility()
+            somethingWrongVisibility(false)
             searchTrack()
         }
 
@@ -113,18 +114,18 @@ class SearchActivity : AppCompatActivity(){
             afterTextChanged = { s: Editable? ->
                 if (s.toString().isEmpty()) {
                     searchList.isVisible = false
-                    isHistoryVisible(s?.isEmpty() == true && Creator.provideSongSearchHistoryInteractor().readHistory().isNotEmpty())
-                    somethingWrongVisibility()
+                    isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readHistory().isNotEmpty())
                 }
             },
 
             onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
                 searchList.isVisible = false
                 progressBar.isVisible = false
+                somethingWrongVisibility(false)
                 searchDebounce()
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                isHistoryVisible(s?.isEmpty() == true && Creator.provideSongSearchHistoryInteractor().readHistory().isNotEmpty())
+                isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readHistory().isNotEmpty())
             }
         )
 
@@ -137,7 +138,7 @@ class SearchActivity : AppCompatActivity(){
 
     fun searchTrack() {
         progressBar.isVisible = true
-        somethingWrongVisibility()
+        somethingWrongVisibility(false)
         songsList.clear()
         searchSongUseCase.execute(
             searchText.text.toString(),
@@ -183,17 +184,13 @@ class SearchActivity : AppCompatActivity(){
     private fun showMessage(text: String, additionalMessage: String, internetError: Boolean) {
         progressBar.isVisible = false
         if (internetError) {
-            somethingWrongText.visibility = View.VISIBLE
-            somethingWrongImage.visibility = View.VISIBLE
-            refreshButton.visibility = View.VISIBLE
             songsList.clear()
             songsAdapter.notifyDataSetChanged()
             somethingWrongText.text = text
             somethingWrongImage.setImageResource(R.drawable.trouble_with_internet)
+            somethingWrongVisibility(true)
         } else {
             if (text.isNotEmpty()) {
-                somethingWrongText.visibility = View.VISIBLE
-                somethingWrongImage.visibility = View.VISIBLE
                 songsList.clear()
                 songsAdapter.notifyDataSetChanged()
                 somethingWrongText.text = text
@@ -202,14 +199,16 @@ class SearchActivity : AppCompatActivity(){
                     Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
                         .show()
                 }
+                somethingWrongText.isVisible = true
+                somethingWrongImage.isVisible = true
             }
         }
     }
 
-    private fun somethingWrongVisibility (){
-        somethingWrongText.visibility = View.GONE
-        somethingWrongImage.visibility = View.GONE
-        refreshButton.visibility = View.GONE
+    private fun somethingWrongVisibility (i: Boolean){
+        somethingWrongText.isVisible = i
+        somethingWrongImage.isVisible = i
+        refreshButton.isVisible = i
     }
 
     private fun searchDebounce() {
