@@ -40,6 +40,7 @@ class SettingsActivity : AppCompatActivity() {
         support.setOnClickListener{
             startActivity(
                 settingsNavigation.support(
+                    getString(R.string.dev_email),
                     getString(R.string.for_dev),
                     getString(R.string.thanks_dev)
                 )

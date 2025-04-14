@@ -20,10 +20,10 @@ class SettingsExternalNavigationRepositoryImpl(): SettingsExternalNavigationRepo
         return agreementIntent
     }
 
-    override fun support(subjectForDev: String, massageForDev: String): Intent {
+    override fun support(email: String, subjectForDev: String, massageForDev: String): Intent {
         val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(R.string.dev_email))
+            data = Uri.parse( "mailto:$email")
+            putExtra(Intent.EXTRA_EMAIL, email)
             putExtra(Intent.EXTRA_SUBJECT, subjectForDev)
             putExtra(Intent.EXTRA_TEXT, massageForDev)
         }

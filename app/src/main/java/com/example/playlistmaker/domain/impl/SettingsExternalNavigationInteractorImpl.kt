@@ -16,7 +16,7 @@ class SettingsExternalNavigationInteractorImpl(
         return repository.userAgreements(link)
     }
 
-    override fun support(subjectForDev: String, massageForDev: String): Intent {
-        return repository.support(subjectForDev, massageForDev)
+    override fun support(email: String, subjectForDev: String, massageForDev: String): Intent {
+        return repository.support(email, subjectForDev, massageForDev)
     }
 }

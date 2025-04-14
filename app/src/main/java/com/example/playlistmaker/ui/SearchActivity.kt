@@ -54,8 +54,7 @@ class SearchActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val searchHistory = searchHistoryInteractor.readSongHistory()
-        val historyAdapter = SongsAdapter(searchHistory.toMutableList())
+        val historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)

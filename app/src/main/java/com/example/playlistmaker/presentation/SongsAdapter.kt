@@ -16,9 +16,11 @@ class SongsAdapter (
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
     companion object{
-        private var searchHistory = mutableListOf<SongData>()
+        val interactor = Creator.provideHistorySharedPrefsInteractor()
+        var searchHistory = interactor.readSongHistory().toMutableList()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
+
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
@@ -27,8 +29,6 @@ class SongsAdapter (
     }
 
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
-        val interactor = Creator.provideHistorySharedPrefsInteractor()
-        var searchHistory = interactor.readSongHistory().toMutableList()
             holder.bind(data[position])
             holder.itemView.setOnClickListener {
                 if (clickDebounce()) {
@@ -38,7 +38,6 @@ class SongsAdapter (
                 holder.itemView.context.startActivity(songPageIntent)
                 when {
                     searchHistory.size != 0 && data[position] in searchHistory -> {
-
                         val subList = mutableListOf<SongData>()
                         subList.add(data[position])
                         searchHistory.remove(data[position])
