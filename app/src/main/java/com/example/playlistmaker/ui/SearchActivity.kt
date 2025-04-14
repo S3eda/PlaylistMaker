@@ -21,6 +21,7 @@ import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.presentation.SongsAdapter
 import com.example.playlistmaker.domain.Consumer.Consumer
 import com.example.playlistmaker.domain.Consumer.ConsumerData
+import kotlin.properties.Delegates
 
 class SearchActivity : AppCompatActivity(){
 
@@ -28,13 +29,15 @@ class SearchActivity : AppCompatActivity(){
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val SEARCH_STRING = "SEARCH_STRING"
         const val SOME_TEXT = ""
+        lateinit var list: MutableList<SongData>
+        var pos by Delegates.notNull<Int>()
     }
     private val searchHistoryInteractor = Creator.provideHistorySharedPrefsInteractor()
     private val searchSongUseCase = Creator.provideSearchUseCase()
 
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
-    private val songsAdapter = SongsAdapter(songsList)
+    private val songsAdapter = SongsAdapter(songsList, listRefactoring = {listRefactoring(list, pos)})
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack()}
 
@@ -54,8 +57,22 @@ class SearchActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
 
+
+        val history = if(
+            SongsAdapter.searchHistory.isEmpty() &&
+            searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty()
+            )
+        {
+            searchHistoryInteractor.readSongHistory().toMutableList()
+        }else{
+            SongsAdapter.searchHistory
+        }
+        val historyAdapter = SongsAdapter(history, listRefactoring = {listRefactoring(list, pos)})
+        val historySharedPrefs = Creator.getHistorySharedPrefs(this)
+        historySharedPrefs.registerOnSharedPreferenceChangeListener{ historySharedPrefs, key ->
+            historyAdapter.notifyDataSetChanged()
+        }
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
         somethingWrongText = findViewById(R.id.something_wrong_text)
@@ -91,6 +108,7 @@ class SearchActivity : AppCompatActivity(){
             searchText.setText("")
             songsList.clear()
             songsAdapter.notifyDataSetChanged()
+            historyAdapter.notifyDataSetChanged()
             somethingWrongVisibility(false)
         }
 
@@ -106,7 +124,6 @@ class SearchActivity : AppCompatActivity(){
 
         searchText.addTextChangedListener(
             beforeTextChanged = {s: CharSequence?, p1: Int, p2: Int, p3: Int ->
-                historyAdapter.notifyDataSetChanged()
             },
 
             afterTextChanged = { s: Editable? ->
@@ -114,6 +131,7 @@ class SearchActivity : AppCompatActivity(){
                     searchList.isVisible = false
                     isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readSongHistory().isNotEmpty())
                 }
+                historyAdapter.notifyDataSetChanged()
             },
 
             onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
@@ -126,6 +144,7 @@ class SearchActivity : AppCompatActivity(){
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
                 isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readSongHistory().isNotEmpty())
+                historyAdapter.notifyDataSetChanged()
             }
         )
 
@@ -137,6 +156,7 @@ class SearchActivity : AppCompatActivity(){
     }
 
     fun searchTrack() {
+        isHistoryVisible(false)
         progressBar.isVisible = true
         somethingWrongVisibility(false)
         songsList.clear()
@@ -222,5 +242,40 @@ class SearchActivity : AppCompatActivity(){
         historyTitle.isVisible = i
         historyList.isVisible = i
         clearHistoryButton.isVisible = i
+    }
+
+    fun listRefactoring (data: MutableList<SongData>, position:Int):List<SongData> {
+        var searchHistory = searchHistoryInteractor.readSongHistory().toMutableList()
+        when {
+            searchHistory.size != 0 && data[position] in searchHistory -> {
+                val subList = mutableListOf<SongData>()
+                subList.add(data[position])
+                searchHistory.remove(data[position])
+                subList.addAll(searchHistory)
+                searchHistory.clear()
+                searchHistory.addAll(subList)
+                subList.clear()
+                searchHistoryInteractor.writeSongHistory(searchHistory.toTypedArray())
+                return searchHistory.toList()
+                //notifyDataSetChanged()
+            }
+
+            searchHistory.size == 10 -> {
+                searchHistory.removeAt(9)
+                searchHistory.reverse()
+                searchHistory.add(data[position])
+                searchHistory.reverse()
+                searchHistoryInteractor.writeSongHistory(searchHistory.toTypedArray())
+                return searchHistory.toList()
+            }
+
+            else -> {
+                searchHistory.reverse()
+                searchHistory.add(data[position])
+                searchHistory.reverse()
+                searchHistoryInteractor.writeSongHistory(searchHistory.toTypedArray())
+                return searchHistory.toList()
+            }
+        }
     }
 }

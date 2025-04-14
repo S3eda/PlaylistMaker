@@ -12,12 +12,13 @@ import com.example.playlistmaker.ui.SongPageActivity
 import com.google.gson.Gson
 
 class SongsAdapter (
-    private val data: List<SongData>
+    private val data: List<SongData>,
+    val listRefactoring: () -> List<SongData>
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
     companion object{
-        val interactor = Creator.provideHistorySharedPrefsInteractor()
-        var searchHistory = interactor.readSongHistory().toMutableList()
+        //val interactor = Creator.provideHistorySharedPrefsInteractor()
+        var searchHistory = mutableListOf<SongData>()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
@@ -32,40 +33,17 @@ class SongsAdapter (
             holder.bind(data[position])
             holder.itemView.setOnClickListener {
                 if (clickDebounce()) {
-                val songPageIntent = Intent(holder.itemView.context, SongPageActivity::class.java)
-                val json = Gson().toJson(data[position])
-                songPageIntent.putExtra("SONG_INFORMATION", json)
-                holder.itemView.context.startActivity(songPageIntent)
-                when {
-                    searchHistory.size != 0 && data[position] in searchHistory -> {
-                        val subList = mutableListOf<SongData>()
-                        subList.add(data[position])
-                        searchHistory.remove(data[position])
-                        subList.addAll(searchHistory)
-                        searchHistory.clear()
-                        searchHistory.addAll(subList)
-                        subList.clear()
-                        interactor.writeSongHistory(searchHistory.toTypedArray())
-                        notifyDataSetChanged()
-                    }
-
-                    searchHistory.size == 10 -> {
-                        searchHistory.removeAt(9)
-                        searchHistory.reverse()
-                        searchHistory.add(data[position])
-                        searchHistory.reverse()
-                        interactor.writeSongHistory(searchHistory.toTypedArray())
-                    }
-
-                    else -> {
-                        searchHistory.reverse()
-                        searchHistory.add(data[position])
-                        searchHistory.reverse()
-                        interactor.writeSongHistory(searchHistory.toTypedArray())
-                    }
+                    val songPageIntent =
+                        Intent(holder.itemView.context, SongPageActivity::class.java)
+                    val json = Gson().toJson(data[position])
+                    songPageIntent.putExtra("SONG_INFORMATION", json)
+                    holder.itemView.context.startActivity(songPageIntent)
+                    SearchActivity.pos = position
+                    SearchActivity.list = data.toMutableList()
+                    searchHistory.clear()
+                    searchHistory.addAll(listRefactoring())
                 }
             }
-        }
     }
 
     override fun getItemCount(): Int {
