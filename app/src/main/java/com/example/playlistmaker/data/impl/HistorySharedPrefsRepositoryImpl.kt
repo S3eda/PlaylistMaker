@@ -26,4 +26,10 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
             .clear()
             .apply()
     }
+
+    override fun fillingListForHistoryAdapter(list1: MutableList<SongData>, list2: MutableList<SongData>) {
+        if (list1.isEmpty()) {
+            list1.addAll(list2)
+        }
+    }
 }

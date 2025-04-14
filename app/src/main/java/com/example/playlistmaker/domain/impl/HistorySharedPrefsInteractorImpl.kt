@@ -17,4 +17,11 @@ class HistorySharedPrefsInteractorImpl(private val repository: HistorySharedPref
     override fun clearSongHistory() {
         repository.clearSongHistory()
     }
+
+    override fun fillingListForHistoryAdapter(
+        list1: MutableList<SongData>,
+        list2: MutableList<SongData>
+    ) {
+        repository.fillingListForHistoryAdapter(list1, list2)
+    }
 }

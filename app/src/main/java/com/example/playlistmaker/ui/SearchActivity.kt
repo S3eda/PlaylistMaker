@@ -57,22 +57,17 @@ class SearchActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-
-
-        val history = if(
-            SongsAdapter.searchHistory.isEmpty() &&
-            searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty()
-            )
-        {
+        searchHistoryInteractor.fillingListForHistoryAdapter(
+            SongsAdapter.searchHistory,
             searchHistoryInteractor.readSongHistory().toMutableList()
-        }else{
-            SongsAdapter.searchHistory
-        }
-        val historyAdapter = SongsAdapter(history, listRefactoring = {listRefactoring(list, pos)})
+        )
+
+        val historyAdapter = SongsAdapter(SongsAdapter.searchHistory, listRefactoring = {listRefactoring(list, pos)})
         val historySharedPrefs = Creator.getHistorySharedPrefs(this)
-        historySharedPrefs.registerOnSharedPreferenceChangeListener{ historySharedPrefs, key ->
-            historyAdapter.notifyDataSetChanged()
+        historySharedPrefs.registerOnSharedPreferenceChangeListener{
+            historySharedPrefs, key -> historyAdapter.notifyDataSetChanged()
         }
+
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
         somethingWrongText = findViewById(R.id.something_wrong_text)
@@ -257,7 +252,6 @@ class SearchActivity : AppCompatActivity(){
                 subList.clear()
                 searchHistoryInteractor.writeSongHistory(searchHistory.toTypedArray())
                 return searchHistory.toList()
-                //notifyDataSetChanged()
             }
 
             searchHistory.size == 10 -> {

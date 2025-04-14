@@ -11,13 +11,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.impl.PlayerRepositoryImpl
-import com.example.playlistmaker.data.impl.PlayerRepositoryImpl.Companion
 import com.example.playlistmaker.domain.models.SongData
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.Objects
 
 class SongPageActivity : AppCompatActivity(){
 

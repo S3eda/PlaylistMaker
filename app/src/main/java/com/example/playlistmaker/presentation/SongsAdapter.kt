@@ -17,7 +17,6 @@ class SongsAdapter (
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
     companion object{
-        //val interactor = Creator.provideHistorySharedPrefsInteractor()
         var searchHistory = mutableListOf<SongData>()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
@@ -33,6 +32,7 @@ class SongsAdapter (
             holder.bind(data[position])
             holder.itemView.setOnClickListener {
                 if (clickDebounce()) {
+                    notifyDataSetChanged()
                     val songPageIntent =
                         Intent(holder.itemView.context, SongPageActivity::class.java)
                     val json = Gson().toJson(data[position])
