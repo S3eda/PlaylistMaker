@@ -7,9 +7,10 @@ import com.example.playlistmaker.domain.repository.SettingsExternalNavigationRep
 class SettingsExternalNavigationRepositoryImpl(): SettingsExternalNavigationRepository {
 
     override fun share(link: String): Intent {
-        val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse( "mailto:")
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, link)
+            type = "text/plain"
         }
         return shareIntent
     }
