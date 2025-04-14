@@ -2,14 +2,13 @@ package com.example.playlistmaker.data.impl
 
 import android.content.Intent
 import android.net.Uri
-import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.repository.SettingsExternalNavigationRepository
 
 class SettingsExternalNavigationRepositoryImpl(): SettingsExternalNavigationRepository {
 
     override fun share(link: String): Intent {
         val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
-            type = "text/plain"
+            data = Uri.parse( "mailto:")
             putExtra(Intent.EXTRA_TEXT, link)
         }
         return shareIntent
