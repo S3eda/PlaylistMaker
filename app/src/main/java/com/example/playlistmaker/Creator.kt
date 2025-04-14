@@ -7,35 +7,53 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.playlistmaker.data.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.data.impl.SearchRepositoryImpl
 import com.example.playlistmaker.data.impl.SettingsExternalNavigationRepositoryImpl
-import com.example.playlistmaker.data.impl.SharedPrefsRepositoryImpl
+import com.example.playlistmaker.data.impl.HistorySharedPrefsRepositoryImpl
+import com.example.playlistmaker.data.impl.SettingsSharedPrefsRepositoryImpl
 import com.example.playlistmaker.data.network.NetworkClientImpl
 import com.example.playlistmaker.data.network.NetworkClient
 import com.example.playlistmaker.domain.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.SettingsExternalNavigationInteractorImpl
-import com.example.playlistmaker.domain.impl.SharedPrefsInteractorImpl
+import com.example.playlistmaker.domain.impl.HistorySharedPrefsInteractorImpl
+import com.example.playlistmaker.domain.impl.SettingsSharedPrefsInteractorImpl
 import com.example.playlistmaker.domain.interactor.PlayerInteractor
 import com.example.playlistmaker.domain.interactor.SettingsExternalNavigationInteractor
-import com.example.playlistmaker.domain.interactor.SharedPrefsInteractor
+import com.example.playlistmaker.domain.interactor.HistorySharedPrefsInteractor
+import com.example.playlistmaker.domain.interactor.SettingsSharedPrefsInteractor
 import com.example.playlistmaker.domain.repository.PlayerRepository
 import com.example.playlistmaker.domain.repository.SearchRepository
 import com.example.playlistmaker.domain.repository.SettingsExternalNavigationRepository
-import com.example.playlistmaker.domain.repository.SharedPrefsRepository
+import com.example.playlistmaker.domain.repository.HistorySharedPrefsRepository
+import com.example.playlistmaker.domain.repository.SettingsSharedPrefsRepository
 import com.example.playlistmaker.domain.useCase.SearchSongUseCase
 
 object Creator {
 
     lateinit var context: Application
+    const val HISTORY_KEY = "history_key"
+    const val THEME_KEY = "theme_key"
 
-    fun getSharedPrefs(context: Context, key: String):SharedPreferences{
-        return context.getSharedPreferences(key, MODE_PRIVATE)
+    fun getHistorySharedPrefs(context: Context):SharedPreferences{
+        return context.getSharedPreferences(HISTORY_KEY, MODE_PRIVATE)
     }
 
-    private fun getSharedPrefsRepository(key: String): SharedPrefsRepository{
-        return SharedPrefsRepositoryImpl(context, key)
+    fun getSettingsSharedPrefs(context: Context):SharedPreferences{
+        return context.getSharedPreferences(HISTORY_KEY, MODE_PRIVATE)
     }
 
-    fun provideSharedPrefsInteractor(key: String): SharedPrefsInteractor{
-        return SharedPrefsInteractorImpl(getSharedPrefsRepository(key))
+    private fun getHistorySharedPrefsRepository(): HistorySharedPrefsRepository{
+        return HistorySharedPrefsRepositoryImpl(getHistorySharedPrefs(context))
+    }
+
+    fun provideHistorySharedPrefsInteractor(): HistorySharedPrefsInteractor{
+        return HistorySharedPrefsInteractorImpl(getHistorySharedPrefsRepository())
+    }
+
+    private fun getSettingsSharedPrefsRepository(): SettingsSharedPrefsRepository{
+        return SettingsSharedPrefsRepositoryImpl(getSettingsSharedPrefs(context))
+    }
+
+    fun provideSettingsSharedPrefsInteractor():SettingsSharedPrefsInteractor{
+        return SettingsSharedPrefsInteractorImpl(getSettingsSharedPrefsRepository())
     }
 
     fun initContext(cont: Application){

@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,15 +10,16 @@ import com.example.playlistmaker.data.dto.App
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-private val THEME_KEY = "theme_key"
+
 
 class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         val settingsNavigation = Creator.provideSettingsExternalNavigationInteractor()
-        val sharedPrefsInteractor = Creator.provideSharedPrefsInteractor(THEME_KEY)
+        val sharedPrefsInteractor = Creator.provideSettingsSharedPrefsInteractor()
 
         val backImage = findViewById<ImageView>(R.id.back)
         backImage.setOnClickListener{

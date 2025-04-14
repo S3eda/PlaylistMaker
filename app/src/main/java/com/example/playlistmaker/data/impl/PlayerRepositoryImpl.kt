@@ -3,22 +3,22 @@ package com.example.playlistmaker.data.impl
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageButton
-import android.widget.TextView
-import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.repository.PlayerRepository
-
-private val PLAYER_STATE_DEFAULT = 0
-private val PLAYER_STATE_PREPARED = 1
-private val PLAYER_STATE_PLAYING = 2
-private val PLAYER_STATE_PAUSED = 3
-private var player = PLAYER_STATE_DEFAULT
-private val handler = Handler(Looper.getMainLooper())
-private val DELAY = 1000L
 
 class PlayerRepositoryImpl(): PlayerRepository {
 
+    companion object{
+        private val PLAYER_STATE_DEFAULT = 0
+        private val PLAYER_STATE_PREPARED = 1
+        private val PLAYER_STATE_PLAYING = 2
+        private val PLAYER_STATE_PAUSED = 3
+        private val PLAYER_STATE_FINISH = 4
+    }
+
+    private var player = PLAYER_STATE_DEFAULT
+
     private val mediaPlayer = MediaPlayer()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun startPlayer(){
         mediaPlayer.start()
@@ -38,43 +38,22 @@ class PlayerRepositoryImpl(): PlayerRepository {
         player = PLAYER_STATE_DEFAULT
     }
 
-    override fun preparePlayer(uri: String, button: ImageButton, text: TextView) {
+    override fun preparePlayer(uri: String) {
         mediaPlayer.setDataSource(uri)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            button.isEnabled = true
             player = PLAYER_STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            player = PLAYER_STATE_PREPARED
-            button.setImageResource(R.drawable.play_button)
-            text.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
+            player = PLAYER_STATE_FINISH
         }
     }
-
 
     override fun playerStatus(): Int {
         return player
     }
 
-    override fun startTimer(duration: Long, text: TextView) {
-        handler.post(
-            createUpdateTimerTask(duration, text)
-        )
-    }
-
-    override fun createUpdateTimerTask(duration: Long, text: TextView): Runnable {
-        return object : Runnable {
-            override fun run() {
-                val timeLeft = mediaPlayer.getCurrentPosition()
-                val remainingTime = duration + timeLeft
-
-                if (player == 2 && remainingTime < 30000L) {
-                    val seconds = remainingTime / DELAY
-                    text.text = String.format("%02d:%02d", seconds / 60, seconds % 60)
-                    handler.postDelayed(this, DELAY / 3)
-                }
-            }
-        }
+    override fun getRemainingTime():Int{
+        return mediaPlayer.getCurrentPosition()
     }
 }

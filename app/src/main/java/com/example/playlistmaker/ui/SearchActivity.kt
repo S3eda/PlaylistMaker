@@ -28,10 +28,8 @@ class SearchActivity : AppCompatActivity(){
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val SEARCH_STRING = "SEARCH_STRING"
         const val SOME_TEXT = ""
-        const val HISTORY_KEY = "history_key"
-        val searchHistoryInteractor = Creator.provideSharedPrefsInteractor(HISTORY_KEY)
     }
-
+    private val searchHistoryInteractor = Creator.provideHistorySharedPrefsInteractor()
     private val searchSongUseCase = Creator.provideSearchUseCase()
 
     var saveSearchText:String = SOME_TEXT
@@ -56,7 +54,8 @@ class SearchActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
+        val searchHistory = searchHistoryInteractor.readSongHistory()
+        val historyAdapter = SongsAdapter(searchHistory.toMutableList())
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)

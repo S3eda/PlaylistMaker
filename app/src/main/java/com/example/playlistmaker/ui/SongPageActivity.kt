@@ -1,6 +1,8 @@
 package com.example.playlistmaker.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,10 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.impl.PlayerRepositoryImpl
+import com.example.playlistmaker.data.impl.PlayerRepositoryImpl.Companion
 import com.example.playlistmaker.domain.models.SongData
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.Objects
 
 class SongPageActivity : AppCompatActivity(){
 
@@ -21,6 +26,8 @@ class SongPageActivity : AppCompatActivity(){
         private const val PLAYER_STATE_PREPARED = 1
         private const val PLAYER_STATE_PLAYING = 2
         private const val PLAYER_STATE_PAUSED = 3
+        private val DELAY = 1000L
+        private val PLAYER_STATE_FINISH = 4
     }
 
     private lateinit var songName:TextView
@@ -39,6 +46,7 @@ class SongPageActivity : AppCompatActivity(){
     private lateinit var songURI: String
     private val playerInteractor = Creator.providePlayerInteractor()
     private var playerState = PLAYER_STATE_DEFAULT
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +70,12 @@ class SongPageActivity : AppCompatActivity(){
         val songExemp = Gson().fromJson(songInformation, SongData::class.java)
         songURI = songExemp.previewUrl
 
-        playerInteractor.preparePlayer(songURI, playButton, progress)
+        playerInteractor.preparePlayer(songURI)
+        if(playerState != 0) {
+            playButton.isEnabled = true
+            playButton.setImageResource(R.drawable.play_button)
+            progress.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
+        }
 
         songName.text = songExemp.trackName
         groupName.text = songExemp.artistName
@@ -85,7 +98,9 @@ class SongPageActivity : AppCompatActivity(){
 
         playButton.setOnClickListener{
             playbackControl()
-            playerInteractor.startTimer(0L, progress)
+            handler.post {
+                playProgress(0L).run()
+            }
         }
     }
 
@@ -108,10 +123,33 @@ class SongPageActivity : AppCompatActivity(){
                 playerState =  playerInteractor.playerStatus()
                 playButton.setImageResource(R.drawable.play_button)
             }
-            PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED  -> {
+            PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED, PLAYER_STATE_FINISH -> {
                 playerInteractor.startPlayer()
                 playerState =  playerInteractor.playerStatus()
                 playButton.setImageResource(R.drawable.pause)
+            }
+        }
+    }
+
+    private fun playProgress(duration: Long): Runnable{
+        return object : Runnable{
+            override fun run() {
+                var timeLeft = playerInteractor.getRemainingTime()
+                val remainingTime = duration + timeLeft
+                when (playerState) {
+                    PLAYER_STATE_PLAYING -> {
+                        val sec = remainingTime / DELAY
+                        progress.text = String.format("%02d:%02d", sec / 60, sec % 60)
+                        handler.postDelayed(this, DELAY / 3)
+                        playerState = playerInteractor.playerStatus()
+                    }
+                    PLAYER_STATE_FINISH -> {
+                        playButton.setImageResource(R.drawable.play_button)
+                        progress.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
+                        handler.postDelayed(this, DELAY / 3)
+                        handler.removeCallbacksAndMessages(null)
+                    }
+                }
             }
         }
     }
