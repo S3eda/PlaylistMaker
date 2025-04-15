@@ -38,8 +38,7 @@ class SongsAdapter (
                     val json = Gson().toJson(data[position])
                     songPageIntent.putExtra("SONG_INFORMATION", json)
                     holder.itemView.context.startActivity(songPageIntent)
-                    SearchActivity.pos = position
-                    SearchActivity.list = data.toMutableList()
+                    SearchActivity.track = data[position]
                     searchHistory.clear()
                     searchHistory.addAll(listRefactoring())
                 }

@@ -32,4 +32,38 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
             list1.addAll(list2)
         }
     }
+
+    override fun listRefactoring (track: SongData):List<SongData> {
+        val searchHistory = readSongHistory().toMutableList()
+        when {
+            searchHistory.size != 0 && track in searchHistory -> {
+                val subList = mutableListOf<SongData>()
+                subList.add(track)
+                searchHistory.remove(track)
+                subList.addAll(searchHistory)
+                searchHistory.clear()
+                searchHistory.addAll(subList)
+                subList.clear()
+                writeSongHistory(searchHistory.toTypedArray())
+                return searchHistory.toList()
+            }
+
+            searchHistory.size == 10 -> {
+                searchHistory.removeAt(9)
+                searchHistory.reverse()
+                searchHistory.add(track)
+                searchHistory.reverse()
+                writeSongHistory(searchHistory.toTypedArray())
+                return searchHistory.toList()
+            }
+
+            else -> {
+                searchHistory.reverse()
+                searchHistory.add(track)
+                searchHistory.reverse()
+                writeSongHistory(searchHistory.toTypedArray())
+                return searchHistory.toList()
+            }
+        }
+    }
 }

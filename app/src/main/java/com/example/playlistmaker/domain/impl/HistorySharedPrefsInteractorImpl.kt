@@ -24,4 +24,10 @@ class HistorySharedPrefsInteractorImpl(private val repository: HistorySharedPref
     ) {
         repository.fillingListForHistoryAdapter(list1, list2)
     }
+
+    override fun listRefactoring(
+        track: SongData
+    ): List<SongData> {
+        return repository.listRefactoring(track)
+    }
 }

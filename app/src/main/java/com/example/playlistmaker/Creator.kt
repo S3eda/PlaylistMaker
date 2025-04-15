@@ -37,7 +37,7 @@ object Creator {
     }
 
     fun getSettingsSharedPrefs(context: Context):SharedPreferences{
-        return context.getSharedPreferences(HISTORY_KEY, MODE_PRIVATE)
+        return context.getSharedPreferences(THEME_KEY, MODE_PRIVATE)
     }
 
     private fun getHistorySharedPrefsRepository(): HistorySharedPrefsRepository{
