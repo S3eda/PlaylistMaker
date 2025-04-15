@@ -151,40 +151,42 @@ class SearchActivity : AppCompatActivity(){
     }
 
     fun searchTrack() {
-        isHistoryVisible(false)
-        progressBar.isVisible = true
-        somethingWrongVisibility(false)
-        songsList.clear()
-        searchSongUseCase.execute(
-            searchText.text.toString(),
-            consumer = object : Consumer<List<SongData>> {
-                override fun consume(data: ConsumerData<List<SongData>>) {
-                    handler.post {
-                        when (data) {
-                            is ConsumerData.Error -> showMessage(
-                                getString(R.string.trouble_with_internet),
-                                data.message,
-                                true
-                            )
+        if (searchText.text.isNotEmpty()) {
+            isHistoryVisible(false)
+            progressBar.isVisible = true
+            somethingWrongVisibility(false)
+            songsList.clear()
+            searchSongUseCase.execute(
+                searchText.text.toString(),
+                consumer = object : Consumer<List<SongData>> {
+                    override fun consume(data: ConsumerData<List<SongData>>) {
+                        handler.post {
+                            when (data) {
+                                is ConsumerData.Error -> showMessage(
+                                    getString(R.string.trouble_with_internet),
+                                    data.message,
+                                    true
+                                )
 
-                            is ConsumerData.Data -> {
-                                if (data.value.toMutableList().isEmpty()) {
-                                    showMessage(
-                                        getString(R.string.empty_search_result),
-                                        "",
-                                        false
-                                    )
-                                } else {
-                                    songsList.addAll(data.value.toMutableList())
-                                    progressBar.isVisible = false
-                                    songsAdapter.notifyDataSetChanged()
-                                    searchList.isVisible = true
+                                is ConsumerData.Data -> {
+                                    if (data.value.toMutableList().isEmpty()) {
+                                        showMessage(
+                                            getString(R.string.empty_search_result),
+                                            "",
+                                            false
+                                        )
+                                    } else {
+                                        songsList.addAll(data.value.toMutableList())
+                                        progressBar.isVisible = false
+                                        songsAdapter.notifyDataSetChanged()
+                                        searchList.isVisible = true
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            })
+                })
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -210,12 +212,12 @@ class SearchActivity : AppCompatActivity(){
                 songsAdapter.notifyDataSetChanged()
                 somethingWrongText.text = text
                 somethingWrongImage.setImageResource(R.drawable.empty_search)
+                somethingWrongText.isVisible = true
+                somethingWrongImage.isVisible = true
                 if (additionalMessage.isNotEmpty()) {
                     Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
                         .show()
                 }
-                somethingWrongText.isVisible = true
-                somethingWrongImage.isVisible = true
             }
         }
     }
