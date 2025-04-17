@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.SongData
-import com.example.playlistmaker.presentation.SongsAdapter
+import com.example.playlistmaker.ui.presentation.SongsAdapter
 import com.example.playlistmaker.domain.Consumer.Consumer
 import com.example.playlistmaker.domain.Consumer.ConsumerData
 
@@ -28,7 +28,6 @@ class SearchActivity : AppCompatActivity(){
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val SEARCH_STRING = "SEARCH_STRING"
         const val SOME_TEXT = ""
-        lateinit var track: SongData
     }
 
     private val searchHistoryInteractor = Creator.provideHistorySharedPrefsInteractor()
@@ -36,7 +35,7 @@ class SearchActivity : AppCompatActivity(){
 
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
-    private val songsAdapter = SongsAdapter(songsList, listRefactoring = {searchHistoryInteractor.listRefactoring(track)})
+    private val songsAdapter = SongsAdapter(songsList, onClickAction = {track -> searchHistoryInteractor.listRefactoring(track)})
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack()}
 
@@ -52,23 +51,21 @@ class SearchActivity : AppCompatActivity(){
     private lateinit var progressBar: ProgressBar
     private lateinit var historyTitle: TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val songHistoryList = searchHistoryInteractor.getHistoryList()
+
         searchHistoryInteractor.fillingListForHistoryAdapter(
-            SongsAdapter.searchHistory,
+            songHistoryList,
             searchHistoryInteractor.readSongHistory().toMutableList()
         )
 
-        val historyAdapter = SongsAdapter(
-            SongsAdapter.searchHistory,
-            listRefactoring = { searchHistoryInteractor.listRefactoring(track) })
-
-        val historySharedPrefs = Creator.getHistorySharedPrefs(this)
-        historySharedPrefs.registerOnSharedPreferenceChangeListener{
-            historySharedPrefs, key -> historyAdapter.notifyDataSetChanged()
-        }
+        var historyAdapter = SongsAdapter(
+            songHistoryList,
+            onClickAction = { track -> searchHistoryInteractor.listRefactoring(track) })
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)

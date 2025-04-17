@@ -1,8 +1,10 @@
-package com.example.playlistmaker.presentation
+package com.example.playlistmaker.ui.presentation
 
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
@@ -13,11 +15,10 @@ import com.google.gson.Gson
 
 class SongsAdapter (
     private val data: List<SongData>,
-    val listRefactoring: () -> List<SongData>
+    val onClickAction: (SongData) -> Unit
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
     companion object{
-        var searchHistory = mutableListOf<SongData>()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
@@ -32,15 +33,13 @@ class SongsAdapter (
             holder.bind(data[position])
             holder.itemView.setOnClickListener {
                 if (clickDebounce()) {
+                    onClickAction.invoke(data[position])
                     notifyDataSetChanged()
                     val songPageIntent =
                         Intent(holder.itemView.context, SongPageActivity::class.java)
                     val json = Gson().toJson(data[position])
                     songPageIntent.putExtra("SONG_INFORMATION", json)
                     holder.itemView.context.startActivity(songPageIntent)
-                    SearchActivity.track = data[position]
-                    searchHistory.clear()
-                    searchHistory.addAll(listRefactoring())
                 }
             }
     }

@@ -8,6 +8,12 @@ import com.google.gson.Gson
 
 class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreferences): HistorySharedPrefsRepository {
 
+    var anyList = mutableListOf<SongData>()
+
+    override fun getHistoryList():MutableList<SongData>{
+        return anyList
+    }
+
     override fun readSongHistory(): Array<SongData> {
         val json = sharedPrefs.getString(Creator.HISTORY_KEY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<SongData>::class.java)
@@ -33,7 +39,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
         }
     }
 
-    override fun listRefactoring (track: SongData):List<SongData> {
+    override fun listRefactoring (track: SongData){
         val searchHistory = readSongHistory().toMutableList()
         when {
             searchHistory.size != 0 && track in searchHistory -> {
@@ -45,7 +51,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.addAll(subList)
                 subList.clear()
                 writeSongHistory(searchHistory.toTypedArray())
-                return searchHistory.toList()
+                anyList = searchHistory.toMutableList()
             }
 
             searchHistory.size == 10 -> {
@@ -54,7 +60,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.add(track)
                 searchHistory.reverse()
                 writeSongHistory(searchHistory.toTypedArray())
-                return searchHistory.toList()
+                anyList = searchHistory.toMutableList()
             }
 
             else -> {
@@ -62,7 +68,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.add(track)
                 searchHistory.reverse()
                 writeSongHistory(searchHistory.toTypedArray())
-                return searchHistory.toList()
+                anyList = searchHistory.toMutableList()
             }
         }
     }

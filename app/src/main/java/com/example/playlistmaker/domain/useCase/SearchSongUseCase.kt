@@ -1,8 +1,5 @@
 package com.example.playlistmaker.domain.useCase
 
-import android.os.Handler
-import android.os.Looper
-import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.Consumer.Consumer
 import com.example.playlistmaker.domain.Consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Resourse

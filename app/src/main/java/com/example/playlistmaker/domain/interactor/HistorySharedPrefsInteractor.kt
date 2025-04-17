@@ -7,5 +7,6 @@ interface HistorySharedPrefsInteractor {
     fun writeSongHistory(data: Array<SongData>)
     fun clearSongHistory()
     fun fillingListForHistoryAdapter(list1: MutableList<SongData>, list2: MutableList<SongData>)
-    fun listRefactoring (track: SongData):List<SongData>
+    fun listRefactoring (track: SongData)
+    fun getHistoryList():MutableList<SongData>
 }
