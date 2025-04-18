@@ -14,7 +14,6 @@ import com.example.playlistmaker.ui.SongPageActivity
 import com.google.gson.Gson
 
 class SongsAdapter (
-    private val data: List<SongData>,
     val onClickAction: (SongData) -> Unit
 ) : RecyclerView.Adapter<PlaylistViewHolder>(){
 
@@ -22,6 +21,7 @@ class SongsAdapter (
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
+    private var data = listOf<SongData>()
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
@@ -55,5 +55,10 @@ class SongsAdapter (
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
+    }
+
+    fun setItem(list: List<SongData>){
+        data = list
+        notifyDataSetChanged()
     }
 }

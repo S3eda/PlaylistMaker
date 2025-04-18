@@ -35,7 +35,7 @@ class SearchActivity : AppCompatActivity(){
 
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
-    private val songsAdapter = SongsAdapter(songsList, onClickAction = {track -> searchHistoryInteractor.listRefactoring(track)})
+    private val songsAdapter = SongsAdapter( onClickAction = {track -> searchHistoryInteractor.listRefactoring(track)})
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack()}
 
@@ -64,7 +64,6 @@ class SearchActivity : AppCompatActivity(){
         )
 
         var historyAdapter = SongsAdapter(
-            songHistoryList,
             onClickAction = { track -> searchHistoryInteractor.listRefactoring(track) })
 
         searchText = findViewById(R.id.searchText)
@@ -80,7 +79,9 @@ class SearchActivity : AppCompatActivity(){
         historyTitle = findViewById(R.id.history_title)
 
         searchList.adapter = songsAdapter
+        songsAdapter.setItem(songsList)
         historyList.adapter = historyAdapter
+        historyAdapter.setItem(searchHistoryInteractor.getHistoryList())
 
         isHistoryVisible(searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty())
 
