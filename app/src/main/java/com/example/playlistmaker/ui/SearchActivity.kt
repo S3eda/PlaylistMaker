@@ -35,7 +35,18 @@ class SearchActivity : AppCompatActivity(){
 
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
-    private val songsAdapter = SongsAdapter( onClickAction = {track -> searchHistoryInteractor.listRefactoring(track)})
+
+    private val songsAdapter = SongsAdapter(
+        onClickAction = {
+            val track = searchHistoryInteractor.listRefactoring(it)
+            songsAdapter.setItem(items.toList())
+        })
+
+    val historyAdapter = SongsAdapter(
+        onClickAction = {
+            val items = searchHistoryInteractor.listRefactoring(it)
+            historyAdapter.setItem(items.toList())
+        })
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack()}
 
@@ -51,7 +62,6 @@ class SearchActivity : AppCompatActivity(){
     private lateinit var progressBar: ProgressBar
     private lateinit var historyTitle: TextView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -62,9 +72,6 @@ class SearchActivity : AppCompatActivity(){
             songHistoryList,
             searchHistoryInteractor.readSongHistory().toMutableList()
         )
-
-        var historyAdapter = SongsAdapter(
-            onClickAction = { track -> searchHistoryInteractor.listRefactoring(track) })
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
@@ -79,9 +86,7 @@ class SearchActivity : AppCompatActivity(){
         historyTitle = findViewById(R.id.history_title)
 
         searchList.adapter = songsAdapter
-        songsAdapter.setItem(songsList)
         historyList.adapter = historyAdapter
-        historyAdapter.setItem(searchHistoryInteractor.getHistoryList())
 
         isHistoryVisible(searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty())
 
