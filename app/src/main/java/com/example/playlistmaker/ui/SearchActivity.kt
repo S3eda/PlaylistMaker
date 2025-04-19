@@ -21,6 +21,7 @@ import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.ui.presentation.SongsAdapter
 import com.example.playlistmaker.domain.Consumer.Consumer
 import com.example.playlistmaker.domain.Consumer.ConsumerData
+import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity(){
 
@@ -36,17 +37,20 @@ class SearchActivity : AppCompatActivity(){
     var saveSearchText:String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
 
-    private val songsAdapter = SongsAdapter(
+    val searchAdapter = SongsAdapter(
         onClickAction = {
-            val track = searchHistoryInteractor.listRefactoring(it)
-            songsAdapter.setItem(items.toList())
+            openTrack(it)
+            val tracks = searchHistoryInteractor.listRefactoring(it)
+            updateHistoryAdapter(tracks)
         })
-
+    
     val historyAdapter = SongsAdapter(
         onClickAction = {
-            val items = searchHistoryInteractor.listRefactoring(it)
-            historyAdapter.setItem(items.toList())
+            openTrack(it)
+            val tracks = searchHistoryInteractor.listRefactoring(it).toList()
+            updateHistoryAdapter(tracks)
         })
+
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack()}
 
@@ -73,6 +77,8 @@ class SearchActivity : AppCompatActivity(){
             searchHistoryInteractor.readSongHistory().toMutableList()
         )
 
+        updateHistoryAdapter(songHistoryList)
+
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
         somethingWrongText = findViewById(R.id.something_wrong_text)
@@ -85,7 +91,7 @@ class SearchActivity : AppCompatActivity(){
         progressBar = findViewById(R.id.progress)
         historyTitle = findViewById(R.id.history_title)
 
-        searchList.adapter = songsAdapter
+        searchList.adapter = searchAdapter
         historyList.adapter = historyAdapter
 
         isHistoryVisible(searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty())
@@ -107,7 +113,7 @@ class SearchActivity : AppCompatActivity(){
         clearButton.setOnClickListener {
             searchText.setText("")
             songsList.clear()
-            songsAdapter.notifyDataSetChanged()
+            searchAdapter.notifyDataSetChanged()
             historyAdapter.notifyDataSetChanged()
             somethingWrongVisibility(false)
         }
@@ -183,7 +189,8 @@ class SearchActivity : AppCompatActivity(){
                                     } else {
                                         songsList.addAll(data.value.toMutableList())
                                         progressBar.isVisible = false
-                                        songsAdapter.notifyDataSetChanged()
+                                        updateSearchAdapter(songsList)
+                                        searchAdapter.notifyDataSetChanged()
                                         searchList.isVisible = true
                                     }
                                 }
@@ -207,14 +214,14 @@ class SearchActivity : AppCompatActivity(){
         progressBar.isVisible = false
         if (internetError) {
             songsList.clear()
-            songsAdapter.notifyDataSetChanged()
+            searchAdapter.notifyDataSetChanged()
             somethingWrongText.text = text
             somethingWrongImage.setImageResource(R.drawable.trouble_with_internet)
             somethingWrongVisibility(true)
         } else {
             if (text.isNotEmpty()) {
                 songsList.clear()
-                songsAdapter.notifyDataSetChanged()
+                searchAdapter.notifyDataSetChanged()
                 somethingWrongText.text = text
                 somethingWrongImage.setImageResource(R.drawable.empty_search)
                 somethingWrongText.isVisible = true
@@ -244,5 +251,21 @@ class SearchActivity : AppCompatActivity(){
         historyTitle.isVisible = i
         historyList.isVisible = i
         clearHistoryButton.isVisible = i
+    }
+
+    private fun openTrack(track: SongData){
+        val songPageIntent =
+            Intent(this, SongPageActivity::class.java)
+        val json = Gson().toJson(track)
+        songPageIntent.putExtra("SONG_INFORMATION", json)
+        startActivity(songPageIntent)
+    }
+
+    private fun updateHistoryAdapter(item: List<SongData>){
+        historyAdapter.setItem(item)
+    }
+
+    private fun updateSearchAdapter(item: List<SongData>){
+        searchAdapter.setItem(item)
     }
 }

@@ -35,11 +35,6 @@ class SongsAdapter (
                 if (clickDebounce()) {
                     onClickAction.invoke(data[position])
                     notifyDataSetChanged()
-                    val songPageIntent =
-                        Intent(holder.itemView.context, SongPageActivity::class.java)
-                    val json = Gson().toJson(data[position])
-                    songPageIntent.putExtra("SONG_INFORMATION", json)
-                    holder.itemView.context.startActivity(songPageIntent)
                 }
             }
     }
