@@ -1,11 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -16,11 +15,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.SongData
+import com.example.playlistmaker.ui.presentation.SongsAdapter
+import com.example.playlistmaker.domain.Consumer.Consumer
+import com.example.playlistmaker.domain.Consumer.ConsumerData
+import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity(){
 
@@ -30,16 +31,26 @@ class SearchActivity : AppCompatActivity(){
         const val SOME_TEXT = ""
     }
 
+    private val searchHistoryInteractor = Creator.provideHistorySharedPrefsInteractor()
+    private val searchSongUseCase = Creator.provideSearchUseCase()
+
     var saveSearchText:String = SOME_TEXT
-    private val baseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val searchAPI = retrofit.create(SearchAPI::class.java)
-    private var historyAdapter = SongsAdapter(SongsAdapter.searchHistory)
     private var songsList = mutableListOf<SongData>()
-    private val songsAdapter = SongsAdapter(songsList)
+
+    val searchAdapter = SongsAdapter(
+        onClickAction = {
+            openTrack(it)
+            val tracks = searchHistoryInteractor.listRefactoring(it)
+            updateHistoryAdapter(tracks)
+        })
+    
+    val historyAdapter = SongsAdapter(
+        onClickAction = {
+            openTrack(it)
+            val tracks = searchHistoryInteractor.listRefactoring(it).toList()
+            updateHistoryAdapter(tracks)
+        })
+
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack()}
 
@@ -59,12 +70,14 @@ class SearchActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val historySharedPrefs = getSharedPreferences(App.HISTORY_LIST, MODE_PRIVATE)
-        val searchHistoryEx = SearchHistory(historySharedPrefs)
-        historySharedPrefs.registerOnSharedPreferenceChangeListener { _, _ ->
-            historyAdapter.notifyDataSetChanged()
-        }
-        searchHistoryEx.completionOfSongAdapterSearchHistory(searchHistoryEx)
+        val songHistoryList = searchHistoryInteractor.getHistoryList()
+
+        searchHistoryInteractor.fillingListForHistoryAdapter(
+            songHistoryList,
+            searchHistoryInteractor.readSongHistory().toMutableList()
+        )
+
+        updateHistoryAdapter(songHistoryList)
 
         searchText = findViewById(R.id.searchText)
         clearButton = findViewById(R.id.clearButton)
@@ -78,17 +91,17 @@ class SearchActivity : AppCompatActivity(){
         progressBar = findViewById(R.id.progress)
         historyTitle = findViewById(R.id.history_title)
 
-        searchList.adapter = songsAdapter
+        searchList.adapter = searchAdapter
         historyList.adapter = historyAdapter
 
-        isHistoryVisible(searchHistoryEx.readHistoryList().toMutableList().isNotEmpty())
+        isHistoryVisible(searchHistoryInteractor.readSongHistory().toMutableList().isNotEmpty())
 
         backImage.setOnClickListener {
             finish()
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistoryEx.clearHistory()
+            searchHistoryInteractor.clearSongHistory()
             isHistoryVisible(false)
         }
 
@@ -100,12 +113,13 @@ class SearchActivity : AppCompatActivity(){
         clearButton.setOnClickListener {
             searchText.setText("")
             songsList.clear()
-            songsAdapter.notifyDataSetChanged()
-            somethingWrongVisibility()
+            searchAdapter.notifyDataSetChanged()
+            historyAdapter.notifyDataSetChanged()
+            somethingWrongVisibility(false)
         }
 
         refreshButton.setOnClickListener {
-            somethingWrongVisibility()
+            somethingWrongVisibility(false)
             searchTrack()
         }
 
@@ -116,35 +130,27 @@ class SearchActivity : AppCompatActivity(){
 
         searchText.addTextChangedListener(
             beforeTextChanged = {s: CharSequence?, p1: Int, p2: Int, p3: Int ->
-                val listForHistoryAdapter = searchHistoryEx
-                    .listForAdapter(
-                        searchHistoryEx
-                            .readHistoryList()
-                            .toMutableList(),
-                        SongsAdapter.searchHistory
-                    )
-                val historyAdapter = SongsAdapter(listForHistoryAdapter)
-                historyAdapter.notifyDataSetChanged()
             },
 
             afterTextChanged = { s: Editable? ->
                 if (s.toString().isEmpty()) {
                     searchList.isVisible = false
-                    isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
-                    somethingWrongVisibility()
+                    isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readSongHistory().isNotEmpty())
                 }
+                historyAdapter.notifyDataSetChanged()
             },
 
             onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
                 searchList.isVisible = false
                 progressBar.isVisible = false
-                searchDebounce()
-                if (s.toString().isEmpty()){
-                    handler.removeCallbacks(searchRunnable)
+                somethingWrongVisibility(false)
+                if(!s.isNullOrEmpty()) {
+                    searchDebounce()
                 }
                 clearButton.isVisible = !clearSearchButtonVisibility(s)
                 saveSearchText = s.toString()
-                isHistoryVisible(s?.isEmpty() == true && historyVisibility(searchHistoryEx))
+                isHistoryVisible(s?.isEmpty() == true && searchHistoryInteractor.readSongHistory().isNotEmpty())
+                historyAdapter.notifyDataSetChanged()
             }
         )
 
@@ -152,6 +158,46 @@ class SearchActivity : AppCompatActivity(){
             if(hasFocus) {
                 searchList.isVisible = true
             }
+        }
+    }
+
+    fun searchTrack() {
+        if (searchText.text.isNotEmpty()) {
+            isHistoryVisible(false)
+            progressBar.isVisible = true
+            somethingWrongVisibility(false)
+            songsList.clear()
+            searchSongUseCase.execute(
+                searchText.text.toString(),
+                consumer = object : Consumer<List<SongData>> {
+                    override fun consume(data: ConsumerData<List<SongData>>) {
+                        handler.post {
+                            when (data) {
+                                is ConsumerData.Error -> showMessage(
+                                    getString(R.string.trouble_with_internet),
+                                    data.message,
+                                    true
+                                )
+
+                                is ConsumerData.Data -> {
+                                    if (data.value.toMutableList().isEmpty()) {
+                                        showMessage(
+                                            getString(R.string.empty_search_result),
+                                            "",
+                                            false
+                                        )
+                                    } else {
+                                        songsList.addAll(data.value.toMutableList())
+                                        progressBar.isVisible = false
+                                        updateSearchAdapter(songsList)
+                                        searchAdapter.notifyDataSetChanged()
+                                        searchList.isVisible = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
         }
     }
 
@@ -164,55 +210,22 @@ class SearchActivity : AppCompatActivity(){
         return s.isNullOrEmpty()
     }
 
-        private fun searchTrack (){
-            progressBar.isVisible = true
-            somethingWrongVisibility()
-        searchAPI
-            .search(searchText.text.toString())
-            .enqueue(object: Callback<SongsResponse> {
-                override fun onResponse(
-                    call: Call<SongsResponse>,
-                    response: Response<SongsResponse>
-                ) {
-                    if (response.code() == 200) {
-                        songsList.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            songsList.addAll(response.body()?.results!!)
-                            progressBar.isVisible = false
-                            songsAdapter.notifyDataSetChanged()
-                        }
-                        if (songsList.isEmpty()){
-                            showMessage(getString(R.string.empty_search_result), "", false)
-                        }
-                    } else {
-                        showMessage(getString(R.string.trouble_with_internet), "", true)
-                    }
-                }
-
-                override fun onFailure(call: Call<SongsResponse>, t: Throwable) {
-                    showMessage(getString(R.string.trouble_with_internet), "", true)
-                }
-            })
-    }
-
     private fun showMessage(text: String, additionalMessage: String, internetError: Boolean) {
         progressBar.isVisible = false
         if (internetError) {
-            somethingWrongText.visibility = View.VISIBLE
-            somethingWrongImage.visibility = View.VISIBLE
-            refreshButton.visibility = View.VISIBLE
             songsList.clear()
-            songsAdapter.notifyDataSetChanged()
+            searchAdapter.notifyDataSetChanged()
             somethingWrongText.text = text
             somethingWrongImage.setImageResource(R.drawable.trouble_with_internet)
+            somethingWrongVisibility(true)
         } else {
             if (text.isNotEmpty()) {
-                somethingWrongText.visibility = View.VISIBLE
-                somethingWrongImage.visibility = View.VISIBLE
                 songsList.clear()
-                songsAdapter.notifyDataSetChanged()
+                searchAdapter.notifyDataSetChanged()
                 somethingWrongText.text = text
                 somethingWrongImage.setImageResource(R.drawable.empty_search)
+                somethingWrongText.isVisible = true
+                somethingWrongImage.isVisible = true
                 if (additionalMessage.isNotEmpty()) {
                     Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
                         .show()
@@ -221,15 +234,10 @@ class SearchActivity : AppCompatActivity(){
         }
     }
 
-    private fun somethingWrongVisibility (){
-        somethingWrongText.visibility = View.GONE
-        somethingWrongImage.visibility = View.GONE
-        refreshButton.visibility = View.GONE
-    }
-
-    private fun historyVisibility (ex: SearchHistory):Boolean{
-        return ex.readHistoryList()
-            .isNotEmpty()
+    private fun somethingWrongVisibility (i: Boolean){
+        somethingWrongText.isVisible = i
+        somethingWrongImage.isVisible = i
+        refreshButton.isVisible = i
     }
 
     private fun searchDebounce() {
@@ -243,5 +251,21 @@ class SearchActivity : AppCompatActivity(){
         historyTitle.isVisible = i
         historyList.isVisible = i
         clearHistoryButton.isVisible = i
+    }
+
+    private fun openTrack(track: SongData){
+        val songPageIntent =
+            Intent(this, SongPageActivity::class.java)
+        val json = Gson().toJson(track)
+        songPageIntent.putExtra("SONG_INFORMATION", json)
+        startActivity(songPageIntent)
+    }
+
+    private fun updateHistoryAdapter(item: List<SongData>){
+        historyAdapter.setItem(item)
+    }
+
+    private fun updateSearchAdapter(item: List<SongData>){
+        searchAdapter.setItem(item)
     }
 }
