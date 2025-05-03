@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.sondPage
+package com.example.playlistmaker.ui.song_page
 
 import android.os.Bundle
 import android.os.Handler

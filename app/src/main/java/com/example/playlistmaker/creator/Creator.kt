@@ -77,7 +77,7 @@ object Creator {
     }
 
     private fun provideNetworkClient(): NetworkClient {
-        return NetworkClientImpl()
+        return NetworkClientImpl(context)
     }
 
     private fun getSettingsExternalNavigationRepository(
