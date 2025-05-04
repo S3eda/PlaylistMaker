@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -17,9 +16,6 @@ import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.search.history.interactor.HistorySharedPrefsInteractor
 import com.example.playlistmaker.domain.search.useCase.SearchSongUseCase
 import com.example.playlistmaker.ui.search.model.SearchScreenState
-import com.example.playlistmaker.ui.search.presetation.SongsAdapter
-import com.example.playlistmaker.ui.song_page.SongPageActivity
-import com.google.gson.Gson
 
 class SearchViewModel(
     private val searchHistoryInteractor: HistorySharedPrefsInteractor,

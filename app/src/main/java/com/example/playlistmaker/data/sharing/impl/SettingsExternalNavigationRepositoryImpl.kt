@@ -3,7 +3,6 @@ package com.example.playlistmaker.data.sharing.impl
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
 import com.example.playlistmaker.domain.sharing.repository.SettingsExternalNavigationRepository
 
 class SettingsExternalNavigationRepositoryImpl(private val application: Application): SettingsExternalNavigationRepository {

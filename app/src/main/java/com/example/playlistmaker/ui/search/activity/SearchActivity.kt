@@ -2,8 +2,6 @@ package com.example.playlistmaker.ui.search.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -13,13 +11,11 @@ import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.SongData
-import com.example.playlistmaker.domain.Consumer.Consumer
-import com.example.playlistmaker.domain.Consumer.ConsumerData
 import com.example.playlistmaker.domain.models.ErrorType
 import com.example.playlistmaker.ui.search.model.SearchScreenState
 import com.example.playlistmaker.ui.search.presetation.SongsAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.song_page.SongPageActivity
+import com.example.playlistmaker.ui.song_page.activity.SongPageActivity
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
@@ -48,8 +44,6 @@ class SearchActivity : AppCompatActivity() {
             val tracks = searchHistoryInteractor.listRefactoring(it).toList()
             updateHistoryAdapter(tracks)
         })
-
-    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var searchBinding: ActivitySearchBinding
@@ -99,11 +93,6 @@ class SearchActivity : AppCompatActivity() {
             viewModel.searchDebounce(searchBinding.searchText.toString())
         }
 
-        searchBinding.searchRecyclerView.setOnClickListener() {
-            val songPageIntent = Intent(this, SongPageActivity::class.java)
-            startActivity(songPageIntent)
-        }
-
         searchBinding.searchText.addTextChangedListener(
             beforeTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
             },
@@ -118,12 +107,6 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.getEditTextValue(s.toString())
             }
         )
-
-        searchBinding.searchText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                searchBinding.searchRecyclerView.isVisible = true
-            }
-        }
 
         viewModel.getScreenStateLiveData().observe(this) { screenState ->
             when (screenState) {
