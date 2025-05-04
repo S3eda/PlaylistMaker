@@ -35,6 +35,7 @@ class SongPageViewModel(
         private const val PLAYER_STATE_PLAYING = 2
         private const val PLAYER_STATE_PAUSED = 3
         private val PLAYER_STATE_FINISH = 4
+        private val DELAY = 1000L
     }
 
     private lateinit var songURI: String
@@ -50,10 +51,12 @@ class SongPageViewModel(
     var coverArtwork = ""
 
     private val playerScreenStateLiveData = MutableLiveData<PlayerScreenState>(
-        PlayerScreenState.Content
+        PlayerScreenState.PlayerPreparing
     )
     fun getPlayerScreenStateLiveData(): LiveData<PlayerScreenState> = playerScreenStateLiveData
     private val handler = Handler(Looper.getMainLooper())
+
+    private var timerObserver: ((String) -> Unit)? = null
 
     fun trackInfomation(track: SongData) {
         songName = track.trackName
@@ -66,6 +69,7 @@ class SongPageViewModel(
         coverArtwork = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
         songURI = track.previewUrl
         playerInteractor.preparePlayer(songURI, {isPrepared()}, {isFinish()} )
+        playerScreenStateLiveData.postValue(PlayerScreenState.PlayerPreparing)
     }
 
     private fun isPrepared(){
@@ -75,15 +79,8 @@ class SongPageViewModel(
 
     private fun isFinish(){
         playerState = PLAYER_STATE_FINISH
-        playerScreenStateLiveData.postValue(PlayerScreenState.Finish)
-    }
-
-    fun startTimerTask(startTimer: (duration: Long) -> Runnable) {
-        handler.postAtTime(
-            startTimer(0L),
-            TIMER_TOKEN,
-            SystemClock.uptimeMillis()
-        )
+        playerScreenStateLiveData.postValue(PlayerScreenState.Content)
+        handler.removeCallbacksAndMessages(TIMER_TOKEN)
     }
 
     fun playbackControl() {
@@ -94,7 +91,7 @@ class SongPageViewModel(
                 playerScreenStateLiveData.postValue(PlayerScreenState.Pause)
             }
             PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED, PLAYER_STATE_FINISH -> {
-                playerInteractor.startPlayer()
+                playTrack()
                 playerState = playerInteractor.playerStatus()
                 playerScreenStateLiveData.postValue(PlayerScreenState.Play)
             }
@@ -117,5 +114,50 @@ class SongPageViewModel(
 
     fun getPlayerStatus(): Int {
         return playerInteractor.playerStatus()
+    }
+
+    private fun playTrack(){
+        playerState = PLAYER_STATE_PLAYING
+        playerInteractor.startPlayer()
+        handler.postAtTime(
+            playProgress(0L),
+            TIMER_TOKEN,
+            SystemClock.uptimeMillis()
+        )
+    }
+
+    private fun playProgress(duration: Long): Runnable{
+        return object : Runnable{
+            override fun run() {
+                var timeLeft = getRemainingTime()
+                val remainingTime = duration + timeLeft
+                when (playerState) {
+                    PLAYER_STATE_PLAYING -> {
+                        val sec = remainingTime / DELAY
+                        timer = String.format("%02d:%02d", sec / 60, sec % 60)
+                        handler.postDelayed(this, DELAY / 3)
+                        playerState = getPlayerStatus()
+                    }
+                    PLAYER_STATE_FINISH -> {
+                        handler.postDelayed(this, DELAY / 3)
+                        handler.removeCallbacksAndMessages(null)
+                    }
+                }
+            }
+        }
+    }
+
+    var timer: String = String.format("%02d:%02d", 0 / 60, 0 % 60)
+        private set(value) {
+            field = value
+            timerObserver?.invoke(value)
+        }
+
+    fun addTimerObserver(timerObserver: ((String) -> Unit)) {
+        this.timerObserver = timerObserver
+    }
+
+    fun removeTimerObserver() {
+        this.timerObserver = null
     }
 }

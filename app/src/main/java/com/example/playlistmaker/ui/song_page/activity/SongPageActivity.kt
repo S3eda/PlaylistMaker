@@ -24,15 +24,8 @@ import java.util.Locale
 
 class SongPageActivity : AppCompatActivity(){
 
-    companion object {
-        private const val PLAYER_STATE_PLAYING = 2
-        private val DELAY = 1000L
-        private val PLAYER_STATE_FINISH = 4
-    }
-
     private lateinit var binding: ActivitySongPageBinding
     private lateinit var playerViewModel: SongPageViewModel
-    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +48,13 @@ class SongPageActivity : AppCompatActivity(){
                 is PlayerScreenState.Play -> showPlayState()
                 is PlayerScreenState.Pause -> showPauseState()
                 is PlayerScreenState.Content -> showConten()
-                is PlayerScreenState.Finish -> showFinishState()
                 is PlayerScreenState.Prepared -> showPrepared()
+                is PlayerScreenState.PlayerPreparing -> showPlayerPreparing()
             }
+        }
+
+        playerViewModel.addTimerObserver { timer ->
+            changePlayProgress(timer)
         }
 
         binding.songPageBack.setOnClickListener{
@@ -76,42 +73,17 @@ class SongPageActivity : AppCompatActivity(){
 
     override fun onDestroy() {
         playerViewModel.onDestroy()
+        playerViewModel.removeTimerObserver()
         super.onDestroy()
     }
 
-    private fun playProgress(duration: Long): Runnable{
-        return object : Runnable{
-            override fun run() {
-                var timeLeft = playerViewModel.getRemainingTime()
-                val remainingTime = duration + timeLeft
-                when (playerViewModel.playerState) {
-                    PLAYER_STATE_PLAYING -> {
-                        val sec = remainingTime / DELAY
-                        binding.playProgress.text = String.format("%02d:%02d", sec / 60, sec % 60)
-                        handler.postDelayed(this, DELAY / 3)
-                        playerViewModel.playerState = playerViewModel.getPlayerStatus()
-                    }
-                    PLAYER_STATE_FINISH -> {
-                        binding.playButton.setImageResource(R.drawable.play_button)
-                        binding.playProgress.text = String.format("%02d:%02d", 0 / 60, 0 % 60)
-                        handler.postDelayed(this, DELAY / 3)
-                        handler.removeCallbacksAndMessages(null)
-                    }
-                }
-            }
-        }
-    }
-
     private fun showPlayState(){
-        binding.songName.text = "READY"
         binding.playButton.setImageResource(R.drawable.pause)
-        playerViewModel.startTimerTask { playProgress(0L) }
     }
     private fun showPauseState(){
         binding.playButton.setImageResource(R.drawable.play_button)
     }
     private fun showConten(){
-        binding.playButton.isEnabled = false
         binding.playButton.setImageResource(R.drawable.play_button)
         binding.songYear.text = playerViewModel.songYear
         binding.songGenre.text = playerViewModel.songGenre
@@ -127,12 +99,14 @@ class SongPageActivity : AppCompatActivity(){
             .transform(RoundedCorners(2))
             .into(binding.trackCover)
     }
-    private fun showFinishState(){
-        binding.songName.text = "FINISH"
-        binding.playButton.setImageResource(R.drawable.play_button)
-    }
     private fun showPrepared(){
         binding.playButton.isEnabled = true
-        binding.songName.text = "READY"
+    }
+    private fun showPlayerPreparing(){
+        binding.playButton.isEnabled = false
+    }
+
+    private fun changePlayProgress(text: String){
+        binding.playProgress.text = text
     }
 }
