@@ -55,7 +55,8 @@ class SongPageActivity : AppCompatActivity(){
                 is PlayerScreenState.Play -> showPlayState()
                 is PlayerScreenState.Pause -> showPauseState()
                 is PlayerScreenState.Content -> showConten()
-                is PlayerScreenState.Preparing -> showPreparing()
+                is PlayerScreenState.Finish -> showFinishState()
+                is PlayerScreenState.Prepared -> showPrepared()
             }
         }
 
@@ -102,16 +103,15 @@ class SongPageActivity : AppCompatActivity(){
     }
 
     private fun showPlayState(){
-        binding.playButton.isEnabled = true
         binding.songName.text = "READY"
         binding.playButton.setImageResource(R.drawable.pause)
         playerViewModel.startTimerTask { playProgress(0L) }
     }
     private fun showPauseState(){
-        binding.songName.text = "FINISH"
         binding.playButton.setImageResource(R.drawable.play_button)
     }
     private fun showConten(){
+        binding.playButton.isEnabled = false
         binding.playButton.setImageResource(R.drawable.play_button)
         binding.songYear.text = playerViewModel.songYear
         binding.songGenre.text = playerViewModel.songGenre
@@ -127,8 +127,12 @@ class SongPageActivity : AppCompatActivity(){
             .transform(RoundedCorners(2))
             .into(binding.trackCover)
     }
-    private fun showPreparing(){
-        binding.playButton.isEnabled = false
-        binding.playButton.setImageResource(R.drawable.pause)
+    private fun showFinishState(){
+        binding.songName.text = "FINISH"
+        binding.playButton.setImageResource(R.drawable.play_button)
+    }
+    private fun showPrepared(){
+        binding.playButton.isEnabled = true
+        binding.songName.text = "READY"
     }
 }

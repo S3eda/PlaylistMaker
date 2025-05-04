@@ -70,12 +70,12 @@ class SongPageViewModel(
 
     private fun isPrepared(){
         playerState = PLAYER_STATE_PREPARED
-        playerScreenStateLiveData.postValue(PlayerScreenState.Play)
+        playerScreenStateLiveData.postValue(PlayerScreenState.Prepared)
     }
 
     private fun isFinish(){
         playerState = PLAYER_STATE_FINISH
-        playerScreenStateLiveData.postValue(PlayerScreenState.Pause)
+        playerScreenStateLiveData.postValue(PlayerScreenState.Finish)
     }
 
     fun startTimerTask(startTimer: (duration: Long) -> Runnable) {
