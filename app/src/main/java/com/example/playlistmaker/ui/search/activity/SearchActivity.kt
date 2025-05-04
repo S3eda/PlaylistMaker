@@ -25,28 +25,13 @@ class SearchActivity : AppCompatActivity() {
         const val SOME_TEXT = ""
     }
 
-    private val searchHistoryInteractor = Creator.provideHistorySharedPrefsInteractor()
-
-
     var saveSearchText: String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
 
-    val searchAdapter = SongsAdapter(
-        onClickAction = {
-            openTrack(it)
-            val tracks = searchHistoryInteractor.listRefactoring(it)
-            updateHistoryAdapter(tracks)
-        })
-
-    val historyAdapter = SongsAdapter(
-        onClickAction = {
-            openTrack(it)
-            val tracks = searchHistoryInteractor.listRefactoring(it).toList()
-            updateHistoryAdapter(tracks)
-        })
-
     private lateinit var viewModel: SearchViewModel
     private lateinit var searchBinding: ActivitySearchBinding
+    private lateinit var historyAdapter: SongsAdapter
+    private lateinit var searchAdapter: SongsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,17 +43,8 @@ class SearchActivity : AppCompatActivity() {
         )[SearchViewModel::class.java]
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(searchBinding.root)
-        searchBinding.searchRecyclerView.adapter = searchAdapter
-        searchBinding.historyRecyclerView.adapter = historyAdapter
 
-        val songHistoryList = searchHistoryInteractor.getHistoryList()
-
-        searchHistoryInteractor.fillingListForHistoryAdapter(
-            songHistoryList,
-            searchHistoryInteractor.readSongHistory().toMutableList()
-        )
-
-        viewModel.onStartScreenState(songHistoryList)
+        viewModel.onCreate()
 
         searchBinding.backSearch.setOnClickListener {
             finish()
@@ -105,6 +81,11 @@ class SearchActivity : AppCompatActivity() {
                 showDefaultState()
                 searchBinding.clearButton.isVisible = s.isNullOrEmpty()
                 viewModel.getEditTextValue(s.toString())
+                if (s.toString().isNotEmpty()){
+                    searchBinding.clearButton.isVisible = true
+                } else {
+                    searchBinding.clearButton.isVisible = false
+                }
             }
         )
 
@@ -142,9 +123,11 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.refreshButton.isVisible = false
         searchBinding.clearHistoryButton.isVisible = false
         searchBinding.historyTitle.isVisible = false
+        searchBinding.clearButton.isVisible = false
     }
 
     private fun showError(error: ErrorType) {
+        searchBinding.progress.isVisible = false
         searchBinding.somethingWrongText.isVisible = true
         searchBinding.somethingWrongImage.isVisible = true
         when (error) {
@@ -174,17 +157,30 @@ class SearchActivity : AppCompatActivity() {
         }
 
     }
-
-    private fun showSearchContent(list: List<SongData>) {
-        updateSearchAdapter(list)
-        searchBinding.searchRecyclerView.isVisible = true
-    }
-
     private fun showLoadingState() {
         searchBinding.progress.isVisible = true
     }
 
+    private fun showSearchContent(list: List<SongData>) {
+        searchAdapter = SongsAdapter(
+            onClickAction = {
+                openTrack()
+                val tracks = viewModel.listRefactoring(it)
+                updateHistoryAdapter(tracks)
+            })
+        searchBinding.searchRecyclerView.adapter = searchAdapter
+        updateSearchAdapter(list)
+        searchBinding.searchRecyclerView.isVisible = true
+    }
+
     private fun showHistoryContent(list: List<SongData>) {
+        historyAdapter = SongsAdapter(
+            onClickAction = {
+                openTrack()
+                val tracks = viewModel.listRefactoring(it)
+                updateHistoryAdapter(tracks)
+            })
+        searchBinding.historyRecyclerView.adapter = historyAdapter
         updateHistoryAdapter(list)
         searchBinding.historyRecyclerView.isVisible = true
         searchBinding.clearHistoryButton.isVisible = true
@@ -197,11 +193,9 @@ class SearchActivity : AppCompatActivity() {
             outState.putString(SEARCH_STRING, saveSearchText)
         }
 
-        private fun openTrack(track: SongData) {
+        private fun openTrack() {
             val songPageIntent =
                 Intent(this, SongPageActivity::class.java)
-            val json = Gson().toJson(track)
-            songPageIntent.putExtra("SONG_INFORMATION", json)
             startActivity(songPageIntent)
         }
 

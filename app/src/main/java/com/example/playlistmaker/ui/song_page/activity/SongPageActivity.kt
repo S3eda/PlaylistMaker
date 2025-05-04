@@ -17,6 +17,7 @@ import com.example.playlistmaker.data.player.PlayerRepositoryImpl.Companion
 import com.example.playlistmaker.databinding.ActivitySongPageBinding
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.ui.song_page.models.PlayerScreenState
+import com.example.playlistmaker.ui.song_page.models.Track
 import com.example.playlistmaker.ui.song_page.view_model.SongPageViewModel
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -38,23 +39,14 @@ class SongPageActivity : AppCompatActivity(){
             SongPageViewModel.getSongPageViewModelFactory()
         )[SongPageViewModel::class.java]
 
-        val songInformation = intent.extras?.get("SONG_INFORMATION").toString()
-        val songExemp = Gson().fromJson(songInformation, SongData::class.java)
-
-        playerViewModel.trackInfomation(songExemp)
+        playerViewModel.preparePlayer()
 
         playerViewModel.getPlayerScreenStateLiveData().observe(this){screenState ->
             when(screenState){
-                is PlayerScreenState.Play -> showPlayState()
+                is PlayerScreenState.Play -> showPlayState(screenState.timerValue)
                 is PlayerScreenState.Pause -> showPauseState()
-                is PlayerScreenState.Content -> showConten()
-                is PlayerScreenState.Prepared -> showPrepared()
-                is PlayerScreenState.PlayerPreparing -> showPlayerPreparing()
+                is PlayerScreenState.Content -> showConten(screenState.track)
             }
-        }
-
-        playerViewModel.addTimerObserver { timer ->
-            changePlayProgress(timer)
         }
 
         binding.songPageBack.setOnClickListener{
@@ -73,40 +65,30 @@ class SongPageActivity : AppCompatActivity(){
 
     override fun onDestroy() {
         playerViewModel.onDestroy()
-        playerViewModel.removeTimerObserver()
         super.onDestroy()
     }
 
-    private fun showPlayState(){
+    private fun showPlayState(timerValue: String){
+        binding.playProgress.text = timerValue
         binding.playButton.setImageResource(R.drawable.pause)
     }
     private fun showPauseState(){
         binding.playButton.setImageResource(R.drawable.play_button)
     }
-    private fun showConten(){
+    private fun showConten(track: Track){
         binding.playButton.setImageResource(R.drawable.play_button)
-        binding.songYear.text = playerViewModel.songYear
-        binding.songGenre.text = playerViewModel.songGenre
-        binding.songCountry.text = playerViewModel.songCountry
-        binding.songAlbumName.text = playerViewModel.songAlbumName
-        binding.groupName.text = playerViewModel.groupName
-        binding.songName.text = playerViewModel.songName
-        binding.songDuration.text = playerViewModel.songDuration
-        binding.playProgress.text = playerViewModel.songDuration
+        binding.songYear.text = track.songYear
+        binding.songGenre.text = track.songGenre
+        binding.songCountry.text = track.songCountry
+        binding.songAlbumName.text = track.songAlbumName
+        binding.groupName.text = track.artistName
+        binding.songName.text = track.songName
+        binding.songDuration.text = track.songDuration
+        binding.playProgress.text = track.songDuration
         Glide.with(this)
-            .load(playerViewModel.coverArtwork)
+            .load(track.coverArtwork)
             .placeholder(R.drawable.internet_error_icon)
             .transform(RoundedCorners(2))
             .into(binding.trackCover)
-    }
-    private fun showPrepared(){
-        binding.playButton.isEnabled = true
-    }
-    private fun showPlayerPreparing(){
-        binding.playButton.isEnabled = false
-    }
-
-    private fun changePlayProgress(text: String){
-        binding.playProgress.text = text
     }
 }

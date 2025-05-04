@@ -12,19 +12,23 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.player.interactor.PlayerInteractor
+import com.example.playlistmaker.domain.search.history.interactor.HistorySharedPrefsInteractor
 import com.example.playlistmaker.ui.song_page.models.PlayerScreenState
+import com.example.playlistmaker.ui.song_page.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class SongPageViewModel(
-    private val playerInteractor: PlayerInteractor
+    private val playerInteractor: PlayerInteractor,
+    private val historyInteractor: HistorySharedPrefsInteractor
 ): ViewModel() {
 
     companion object {
         fun getSongPageViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 SongPageViewModel(
-                    Creator.providePlayerInteractor()
+                    Creator.providePlayerInteractor(),
+                    Creator.provideHistorySharedPrefsInteractor()
                 )
             }
         }
@@ -36,50 +40,56 @@ class SongPageViewModel(
         private const val PLAYER_STATE_PAUSED = 3
         private val PLAYER_STATE_FINISH = 4
         private val DELAY = 1000L
+        private const val TIMER_ZERO_VALUE = "00:00"
     }
 
-    private lateinit var songURI: String
     var playerState = PLAYER_STATE_DEFAULT
 
-    var songName = ""
-    var groupName = ""
-    var songDuration = ""
-    var songAlbumName = ""
-    var songYear = ""
-    var songGenre = ""
-    var songCountry = ""
-    var coverArtwork = ""
+    private fun getSong(): SongData {
+        var song: SongData? = null
+        if (historyInteractor.readSongHistory().size != 0) {
+            song = historyInteractor.readSongHistory()[0]
+        }
+        return song!!
+    }
+
+    private var timer: String = TIMER_ZERO_VALUE
 
     private val playerScreenStateLiveData = MutableLiveData<PlayerScreenState>(
-        PlayerScreenState.PlayerPreparing
+        PlayerScreenState.Content(trackInfomation(getSong()))
     )
+
     fun getPlayerScreenStateLiveData(): LiveData<PlayerScreenState> = playerScreenStateLiveData
     private val handler = Handler(Looper.getMainLooper())
 
-    private var timerObserver: ((String) -> Unit)? = null
-
-    fun trackInfomation(track: SongData) {
-        songName = track.trackName
-        groupName = track.artistName
-        songDuration = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        songAlbumName = track.collectionName
-        songYear = track.releaseDate.substring(0, 4)
-        songGenre = track.primaryGenreName
-        songCountry = track.country
-        coverArtwork = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
-        songURI = track.previewUrl
-        playerInteractor.preparePlayer(songURI, {isPrepared()}, {isFinish()} )
-        playerScreenStateLiveData.postValue(PlayerScreenState.PlayerPreparing)
+    fun trackInfomation(track: SongData): Track {
+        return Track(
+            songName = track.trackName,
+            artistName = track.artistName,
+            songDuration = SimpleDateFormat(
+                "mm:ss",
+                Locale.getDefault()
+            ).format(track.trackTimeMillis),
+            songAlbumName = track.collectionName,
+            songYear = track.releaseDate.substring(0, 4),
+            songGenre = track.primaryGenreName,
+            songCountry = track.country,
+            coverArtwork = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"),
+            songURI = track.previewUrl
+        )
     }
 
-    private fun isPrepared(){
+    fun preparePlayer() {
+        playerInteractor.preparePlayer(trackInfomation(getSong()).songURI, { isPrepared() }, { isFinish() })
+    }
+
+    private fun isPrepared() {
         playerState = PLAYER_STATE_PREPARED
-        playerScreenStateLiveData.postValue(PlayerScreenState.Prepared)
     }
 
-    private fun isFinish(){
+    private fun isFinish() {
         playerState = PLAYER_STATE_FINISH
-        playerScreenStateLiveData.postValue(PlayerScreenState.Content)
+        playerScreenStateLiveData.postValue(PlayerScreenState.Content(trackInfomation(getSong())))
         handler.removeCallbacksAndMessages(TIMER_TOKEN)
     }
 
@@ -93,7 +103,7 @@ class SongPageViewModel(
             PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED, PLAYER_STATE_FINISH -> {
                 playTrack()
                 playerState = playerInteractor.playerStatus()
-                playerScreenStateLiveData.postValue(PlayerScreenState.Play)
+                playerScreenStateLiveData.postValue(PlayerScreenState.Play(timer))
             }
         }
     }
@@ -116,7 +126,7 @@ class SongPageViewModel(
         return playerInteractor.playerStatus()
     }
 
-    private fun playTrack(){
+    private fun playTrack() {
         playerState = PLAYER_STATE_PLAYING
         playerInteractor.startPlayer()
         handler.postAtTime(
@@ -126,8 +136,8 @@ class SongPageViewModel(
         )
     }
 
-    private fun playProgress(duration: Long): Runnable{
-        return object : Runnable{
+    private fun playProgress(duration: Long): Runnable {
+        return object : Runnable {
             override fun run() {
                 var timeLeft = getRemainingTime()
                 val remainingTime = duration + timeLeft
@@ -136,8 +146,10 @@ class SongPageViewModel(
                         val sec = remainingTime / DELAY
                         timer = String.format("%02d:%02d", sec / 60, sec % 60)
                         handler.postDelayed(this, DELAY / 3)
+                        playerScreenStateLiveData.postValue(PlayerScreenState.Play(timer))
                         playerState = getPlayerStatus()
                     }
+
                     PLAYER_STATE_FINISH -> {
                         handler.postDelayed(this, DELAY / 3)
                         handler.removeCallbacksAndMessages(null)
@@ -147,17 +159,7 @@ class SongPageViewModel(
         }
     }
 
-    var timer: String = String.format("%02d:%02d", 0 / 60, 0 % 60)
-        private set(value) {
-            field = value
-            timerObserver?.invoke(value)
-        }
-
-    fun addTimerObserver(timerObserver: ((String) -> Unit)) {
-        this.timerObserver = timerObserver
-    }
-
-    fun removeTimerObserver() {
-        this.timerObserver = null
+    fun getTimerValue():String{
+        return timer
     }
 }

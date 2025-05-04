@@ -22,8 +22,8 @@ class SearchViewModel(
     private val searchUseCase: SearchSongUseCase
 ) : ViewModel() {
 
-    companion object{
-        fun getSearchViewModelFactory():ViewModelProvider.Factory = viewModelFactory {
+    companion object {
+        fun getSearchViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 SearchViewModel(
                     Creator.provideHistorySharedPrefsInteractor(),
@@ -37,7 +37,8 @@ class SearchViewModel(
         private const val EMPTY_STRING = ""
     }
 
-    var correctEditTextValue = ""
+    private var correctEditTextValue = ""
+    private var songHistoryList = searchHistoryInteractor.getHistoryList()
 
     private val screenStateLiveData = MutableLiveData<SearchScreenState>(SearchScreenState.Default)
     fun getScreenStateLiveData(): LiveData<SearchScreenState> = screenStateLiveData
@@ -81,17 +82,21 @@ class SearchViewModel(
 
     }
 
-    fun clearHistory(){
+    fun clearHistory() {
         screenStateLiveData.postValue(SearchScreenState.Default)
         searchHistoryInteractor.clearSongHistory()
     }
 
-    fun editTextChange (newRequest: String) {
+    fun editTextChange(newRequest: String) {
         screenStateLiveData.postValue(SearchScreenState.Default)
 
         if (newRequest.isEmpty() && searchHistoryInteractor.readSongHistory().isNotEmpty()) {
             handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-            screenStateLiveData.postValue(SearchScreenState.HistoryContent(searchHistoryInteractor.readSongHistory().toMutableList()))
+            screenStateLiveData.postValue(
+                SearchScreenState.HistoryContent(
+                    searchHistoryInteractor.readSongHistory().toMutableList()
+                )
+            )
             return
         }
 
@@ -101,15 +106,27 @@ class SearchViewModel(
         searchDebounce(newRequest)
     }
 
-    fun getEditTextValue(string: String){
+    fun listRefactoring(track: SongData): List<SongData> {
+        return searchHistoryInteractor.listRefactoring(track)
+    }
+
+    fun getEditTextValue(string: String) {
         correctEditTextValue = string
     }
 
-    fun onStartScreenState(list: List<SongData>) {
-        if (list.isEmpty()) {
+    private fun filligList(list: MutableList<SongData>) {
+        searchHistoryInteractor.fillingListForHistoryAdapter(
+            list,
+            searchHistoryInteractor.readSongHistory().toMutableList()
+        )
+    }
+
+    fun onCreate() {
+        filligList(songHistoryList)
+        if (songHistoryList.isEmpty()) {
             screenStateLiveData.postValue(SearchScreenState.Default)
         } else {
-            screenStateLiveData.postValue(SearchScreenState.HistoryContent(list))
+            screenStateLiveData.postValue(SearchScreenState.HistoryContent(songHistoryList))
         }
     }
 }
