@@ -38,14 +38,16 @@ class PlayerRepositoryImpl(): PlayerRepository {
         player = PLAYER_STATE_DEFAULT
     }
 
-    override fun preparePlayer(uri: String) {
+    override fun preparePlayer(uri: String, isPrepare:()->Unit, isFinish:()->Unit) {
         mediaPlayer.setDataSource(uri)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             player = PLAYER_STATE_PREPARED
+            isPrepare()
         }
         mediaPlayer.setOnCompletionListener {
             player = PLAYER_STATE_FINISH
+            isFinish()
         }
     }
 

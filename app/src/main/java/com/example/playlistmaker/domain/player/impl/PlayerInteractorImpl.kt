@@ -16,8 +16,8 @@ class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInte
         repository.stopPlayer()
     }
 
-    override fun preparePlayer(uri: String) {
-        repository.preparePlayer(uri)
+    override fun preparePlayer(uri: String, isPrepare:()->Unit, isFinish:()->Unit) {
+        repository.preparePlayer(uri, isPrepare, isFinish)
     }
 
     override fun playerStatus(): Int {

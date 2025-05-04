@@ -50,7 +50,7 @@ class SongPageViewModel(
     var coverArtwork = ""
 
     private val playerScreenStateLiveData = MutableLiveData<PlayerScreenState>(
-        PlayerScreenState.Default
+        PlayerScreenState.Content
     )
     fun getPlayerScreenStateLiveData(): LiveData<PlayerScreenState> = playerScreenStateLiveData
     private val handler = Handler(Looper.getMainLooper())
@@ -65,8 +65,17 @@ class SongPageViewModel(
         songCountry = track.country
         coverArtwork = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
         songURI = track.previewUrl
-        playerInteractor.preparePlayer(songURI)
-        playerState = playerInteractor.playerStatus()
+        playerInteractor.preparePlayer(songURI, {isPrepared()}, {isFinish()} )
+    }
+
+    private fun isPrepared(){
+        playerState = PLAYER_STATE_PREPARED
+        playerScreenStateLiveData.postValue(PlayerScreenState.Play)
+    }
+
+    private fun isFinish(){
+        playerState = PLAYER_STATE_FINISH
+        playerScreenStateLiveData.postValue(PlayerScreenState.Pause)
     }
 
     fun startTimerTask(startTimer: (duration: Long) -> Runnable) {
@@ -82,13 +91,12 @@ class SongPageViewModel(
             PLAYER_STATE_PLAYING -> {
                 playerInteractor.pausePlayer()
                 playerState = playerInteractor.playerStatus()
-                playerScreenStateLiveData.postValue(PlayerScreenState.Play)
+                playerScreenStateLiveData.postValue(PlayerScreenState.Pause)
             }
-
             PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED, PLAYER_STATE_FINISH -> {
                 playerInteractor.startPlayer()
                 playerState = playerInteractor.playerStatus()
-                playerScreenStateLiveData.postValue(PlayerScreenState.Pause)
+                playerScreenStateLiveData.postValue(PlayerScreenState.Play)
             }
         }
     }
