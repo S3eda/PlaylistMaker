@@ -9,23 +9,9 @@ import com.google.gson.Gson
 class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreferences):
     HistorySharedPrefsRepository {
 
-    var anyList = mutableListOf<SongData>()
-
-    override fun getHistoryList():MutableList<SongData>{
-        return anyList
-    }
-
     override fun readSongHistory(): Array<SongData> {
         val json = sharedPrefs.getString(Creator.HISTORY_KEY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<SongData>::class.java)
-    }
-
-    override fun writeSongHistory(data: Array<SongData>) {
-        val json = Gson().toJson(data)
-        sharedPrefs.edit()
-            .clear()
-            .putString(Creator.HISTORY_KEY, json)
-            .apply()
     }
 
     override fun clearSongHistory() {
@@ -34,13 +20,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
             .apply()
     }
 
-    override fun fillingListForHistoryAdapter(list1: MutableList<SongData>, list2: MutableList<SongData>) {
-        if (list1.isEmpty()) {
-            list1.addAll(list2)
-        }
-    }
-
-    override fun listRefactoring (track: SongData):MutableList<SongData>{
+    override fun addSongToList (track: SongData){
         val searchHistory = readSongHistory().toMutableList()
         when {
             searchHistory.size != 0 && track in searchHistory -> {
@@ -51,8 +31,10 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.clear()
                 searchHistory.addAll(subList)
                 subList.clear()
-                writeSongHistory(searchHistory.toTypedArray())
-                return searchHistory.toMutableList()
+                sharedPrefs.edit()
+                    .clear()
+                    .putString(Creator.HISTORY_KEY, Gson().toJson(searchHistory))
+                    .apply()
             }
 
             searchHistory.size == 10 -> {
@@ -60,16 +42,20 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.reverse()
                 searchHistory.add(track)
                 searchHistory.reverse()
-                writeSongHistory(searchHistory.toTypedArray())
-                return searchHistory.toMutableList()
+                sharedPrefs.edit()
+                    .clear()
+                    .putString(Creator.HISTORY_KEY, Gson().toJson(searchHistory))
+                    .apply()
             }
 
             else -> {
                 searchHistory.reverse()
                 searchHistory.add(track)
                 searchHistory.reverse()
-                writeSongHistory(searchHistory.toTypedArray())
-                return searchHistory.toMutableList()
+                sharedPrefs.edit()
+                    .clear()
+                    .putString(Creator.HISTORY_KEY, Gson().toJson(searchHistory))
+                    .apply()
             }
         }
     }

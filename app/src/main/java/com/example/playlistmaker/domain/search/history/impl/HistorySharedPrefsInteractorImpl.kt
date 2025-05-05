@@ -11,26 +11,11 @@ class HistorySharedPrefsInteractorImpl(private val repository: HistorySharedPref
         return repository.readSongHistory()
     }
 
-    override fun writeSongHistory(data: Array<SongData>) {
-        repository.writeSongHistory(data)
-    }
-
     override fun clearSongHistory() {
         repository.clearSongHistory()
     }
 
-    override fun fillingListForHistoryAdapter(
-        list1: MutableList<SongData>,
-        list2: MutableList<SongData>
-    ) {
-        repository.fillingListForHistoryAdapter(list1, list2)
-    }
-
-    override fun listRefactoring(track: SongData):MutableList<SongData>{
-        return repository.listRefactoring(track)
-    }
-
-    override fun getHistoryList(): MutableList<SongData> {
-        return repository.getHistoryList()
+    override fun addSongToList(track: SongData){
+        repository.addSongToList(track)
     }
 }

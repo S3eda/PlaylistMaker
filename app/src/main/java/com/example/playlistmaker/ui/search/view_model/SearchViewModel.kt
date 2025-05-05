@@ -16,6 +16,7 @@ import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.search.history.interactor.HistorySharedPrefsInteractor
 import com.example.playlistmaker.domain.search.useCase.SearchSongUseCase
 import com.example.playlistmaker.ui.search.model.SearchScreenState
+import com.example.playlistmaker.ui.search.presetation.SongsAdapter
 
 class SearchViewModel(
     private val searchHistoryInteractor: HistorySharedPrefsInteractor,
@@ -38,7 +39,6 @@ class SearchViewModel(
     }
 
     private var correctEditTextValue = ""
-    private var songHistoryList = searchHistoryInteractor.getHistoryList()
 
     private val screenStateLiveData = MutableLiveData<SearchScreenState>(SearchScreenState.Default)
     fun getScreenStateLiveData(): LiveData<SearchScreenState> = screenStateLiveData
@@ -106,27 +106,28 @@ class SearchViewModel(
         searchDebounce(newRequest)
     }
 
-    fun listRefactoring(track: SongData): List<SongData> {
-        return searchHistoryInteractor.listRefactoring(track)
+    fun listRefactoring(track: SongData) {
+        searchHistoryInteractor.addSongToList(track)
     }
 
     fun getEditTextValue(string: String) {
         correctEditTextValue = string
     }
 
-    private fun filligList(list: MutableList<SongData>) {
-        searchHistoryInteractor.fillingListForHistoryAdapter(
-            list,
-            searchHistoryInteractor.readSongHistory().toMutableList()
-        )
-    }
-
     fun onCreate() {
-        filligList(songHistoryList)
-        if (songHistoryList.isEmpty()) {
+        val historyList = searchHistoryInteractor.readSongHistory()
+        if (historyList.isEmpty()) {
             screenStateLiveData.postValue(SearchScreenState.Default)
         } else {
-            screenStateLiveData.postValue(SearchScreenState.HistoryContent(songHistoryList))
+            screenStateLiveData.postValue(SearchScreenState.HistoryContent(historyList.toMutableList()))
         }
+    }
+
+    fun onClickAction(){
+        screenStateLiveData.postValue(SearchScreenState.HistoryContent(searchHistoryInteractor.readSongHistory().toMutableList()))
+    }
+
+    fun updateAdapter(adapter: SongsAdapter, list: MutableList<SongData>){
+        adapter.setItem(list)
     }
 }

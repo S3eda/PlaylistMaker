@@ -81,11 +81,7 @@ class SearchActivity : AppCompatActivity() {
                 showDefaultState()
                 searchBinding.clearButton.isVisible = s.isNullOrEmpty()
                 viewModel.getEditTextValue(s.toString())
-                if (s.toString().isNotEmpty()){
-                    searchBinding.clearButton.isVisible = true
-                } else {
-                    searchBinding.clearButton.isVisible = false
-                }
+                searchBinding.clearButton.isVisible = !s.isNullOrEmpty()
             }
         )
 
@@ -165,11 +161,11 @@ class SearchActivity : AppCompatActivity() {
         searchAdapter = SongsAdapter(
             onClickAction = {
                 openTrack()
-                val tracks = viewModel.listRefactoring(it)
-                updateHistoryAdapter(tracks)
+                viewModel.listRefactoring(it)
             })
         searchBinding.searchRecyclerView.adapter = searchAdapter
-        updateSearchAdapter(list)
+        viewModel.updateAdapter(searchAdapter, list.toMutableList())
+        searchAdapter.setItem(list)
         searchBinding.searchRecyclerView.isVisible = true
     }
 
@@ -177,11 +173,11 @@ class SearchActivity : AppCompatActivity() {
         historyAdapter = SongsAdapter(
             onClickAction = {
                 openTrack()
-                val tracks = viewModel.listRefactoring(it)
-                updateHistoryAdapter(tracks)
+                viewModel.listRefactoring(it)
+                viewModel.onClickAction()
             })
         searchBinding.historyRecyclerView.adapter = historyAdapter
-        updateHistoryAdapter(list)
+        viewModel.updateAdapter(historyAdapter, list.toMutableList())
         searchBinding.historyRecyclerView.isVisible = true
         searchBinding.clearHistoryButton.isVisible = true
         searchBinding.historyTitle.isVisible = true
@@ -197,14 +193,6 @@ class SearchActivity : AppCompatActivity() {
             val songPageIntent =
                 Intent(this, SongPageActivity::class.java)
             startActivity(songPageIntent)
-        }
-
-        private fun updateHistoryAdapter(item: List<SongData>) {
-            historyAdapter.setItem(item)
-        }
-
-        private fun updateSearchAdapter(item: List<SongData>) {
-            searchAdapter.setItem(item)
         }
     }
 
