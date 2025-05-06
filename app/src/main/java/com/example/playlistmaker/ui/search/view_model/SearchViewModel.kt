@@ -93,7 +93,7 @@ class SearchViewModel(
             handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
             screenStateLiveData.postValue(
                 SearchScreenState.HistoryContent(
-                    searchHistoryInteractor.readSongHistory().toMutableList()
+                    searchHistoryInteractor.readSongHistory().toList()
                 )
             )
             return
@@ -105,7 +105,7 @@ class SearchViewModel(
         searchDebounce(newRequest)
     }
 
-    fun listRefactoring(track: SongData) {
+    fun addTrackToHistory(track: SongData) {
         searchHistoryInteractor.addSongToList(track)
     }
 
@@ -118,11 +118,7 @@ class SearchViewModel(
         if (historyList.isEmpty()) {
             screenStateLiveData.postValue(SearchScreenState.Default)
         } else {
-            screenStateLiveData.postValue(SearchScreenState.HistoryContent(historyList.toMutableList()))
+            screenStateLiveData.postValue(SearchScreenState.HistoryContent(historyList.toList()))
         }
-    }
-
-    fun onClickAction(){
-        screenStateLiveData.postValue(SearchScreenState.HistoryContent(searchHistoryInteractor.readSongHistory().toMutableList()))
     }
 }

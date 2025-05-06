@@ -77,7 +77,6 @@ class SearchActivity : AppCompatActivity() {
 
             onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
                 showDefaultState()
-                searchBinding.clearButton.isVisible = s.isNullOrEmpty()
                 viewModel.getEditTextValue(s.toString())
                 searchBinding.clearButton.isVisible = !s.isNullOrEmpty()
             }
@@ -159,10 +158,9 @@ class SearchActivity : AppCompatActivity() {
         searchAdapter = SongsAdapter(
             onClickAction = {
                 openTrack()
-                viewModel.listRefactoring(it)
+                viewModel.addTrackToHistory(it)
             })
         searchBinding.searchRecyclerView.adapter = searchAdapter
-        searchAdapter.setItem(list)
         searchAdapter.setItem(list)
         searchBinding.searchRecyclerView.isVisible = true
     }
@@ -171,8 +169,7 @@ class SearchActivity : AppCompatActivity() {
         historyAdapter = SongsAdapter(
             onClickAction = {
                 openTrack()
-                viewModel.listRefactoring(it)
-                viewModel.onClickAction()
+                viewModel.addTrackToHistory(it)
             })
         searchBinding.historyRecyclerView.adapter = historyAdapter
         historyAdapter.setItem(list)
