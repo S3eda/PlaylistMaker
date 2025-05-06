@@ -6,13 +6,6 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.Constants
-import com.example.playlistmaker.Constants.ONE_SEC_DELAY
-import com.example.playlistmaker.Constants.PLAYER_STATE_DEFAULT
-import com.example.playlistmaker.Constants.PLAYER_STATE_FINISH
-import com.example.playlistmaker.Constants.PLAYER_STATE_PAUSED
-import com.example.playlistmaker.Constants.PLAYER_STATE_PLAYING
-import com.example.playlistmaker.Constants.PLAYER_STATE_PREPARED
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.player.interactor.PlayerInteractor
 import com.example.playlistmaker.domain.search.history.interactor.HistorySharedPrefsInteractor
@@ -26,6 +19,16 @@ class SongPageViewModel(
     private val historyInteractor: HistorySharedPrefsInteractor
 ): ViewModel() {
 
+    companion object {
+        private const val PLAYER_STATE_DEFAULT = 0
+        private const val PLAYER_STATE_PREPARED = 1
+        private const val PLAYER_STATE_PLAYING = 2
+        private const val PLAYER_STATE_PAUSED = 3
+        private const val PLAYER_STATE_FINISH = 4
+        private const val ONE_SEC_DELAY = 1000L
+        const val TIMER_ZERO_VALUE = "00:00"
+    }
+
     private val TIMER_TOKEN = Any()
     var playerState = PLAYER_STATE_DEFAULT
 
@@ -37,7 +40,7 @@ class SongPageViewModel(
         return song!!
     }
 
-    private var timer: String = Constants.TIMER_ZERO_VALUE
+    private var timer: String = TIMER_ZERO_VALUE
 
     private val playerScreenStateLiveData = MutableLiveData<PlayerScreenState>(
         PlayerScreenState.Content(trackInfomation(getSong()))

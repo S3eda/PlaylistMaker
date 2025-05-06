@@ -2,21 +2,25 @@ package com.example.playlistmaker.data.settings.impl
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.Constants
 import com.example.playlistmaker.domain.settings.repository.SettingsSharedPrefsRepository
 
 class SettingsSharedPrefsRepositoryImpl(
     private val sharedPrefs: SharedPreferences
 ): SettingsSharedPrefsRepository {
 
+    companion object{
+        const val THEME_KEY = "theme_key"
+    }
+
+
     override fun readSettings(): Boolean {
-        return sharedPrefs.getBoolean(Constants.THEME_KEY, false)
+        return sharedPrefs.getBoolean(THEME_KEY, false)
     }
 
     override fun writeSettings(darkTheme: Boolean) {
         sharedPrefs
             .edit()
-            .putBoolean(Constants.THEME_KEY, darkTheme)
+            .putBoolean(THEME_KEY, darkTheme)
             .apply()
     }
 

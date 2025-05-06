@@ -1,6 +1,5 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.Constants
 import com.example.playlistmaker.data.player.PlayerRepositoryImpl
 import com.example.playlistmaker.data.search.history.impl.HistorySharedPrefsRepositoryImpl
 import com.example.playlistmaker.data.search.impl.SearchRepositoryImpl
@@ -15,10 +14,13 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+private const val HISTORY_KEY = "history_key"
+private const val THEME_KEY = "theme_key"
+
 val repositoryModule = module{
 
     single<SettingsSharedPrefsRepository>{
-        SettingsSharedPrefsRepositoryImpl( sharedPrefs = get(named(Constants.THEME_KEY)))
+        SettingsSharedPrefsRepositoryImpl( sharedPrefs = get(named(THEME_KEY)))
     }
 
     single<SettingsExternalNavigationRepository>{
@@ -30,10 +32,10 @@ val repositoryModule = module{
     }
 
     single<HistorySharedPrefsRepository>{
-        HistorySharedPrefsRepositoryImpl(sharedPrefs = get(named(Constants.HISTORY_KEY)))
+        HistorySharedPrefsRepositoryImpl(sharedPrefs = get(named(HISTORY_KEY)))
     }
 
-    single<PlayerRepository>{
+    factory <PlayerRepository>{
         PlayerRepositoryImpl(get())
     }
 }

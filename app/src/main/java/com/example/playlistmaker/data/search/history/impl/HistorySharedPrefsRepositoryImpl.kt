@@ -1,13 +1,16 @@
 package com.example.playlistmaker.data.search.history.impl
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.Constants.HISTORY_KEY
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.search.history.repository.HistorySharedPrefsRepository
 import com.google.gson.Gson
 
 class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreferences):
     HistorySharedPrefsRepository {
+
+        companion object{
+            private const val HISTORY_KEY = "history_key"
+        }
 
     override fun readSongHistory(): Array<SongData> {
         val json = sharedPrefs.getString(HISTORY_KEY, null) ?: return emptyArray()

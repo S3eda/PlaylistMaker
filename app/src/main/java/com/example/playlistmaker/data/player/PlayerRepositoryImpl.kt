@@ -3,14 +3,17 @@ package com.example.playlistmaker.data.player
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import com.example.playlistmaker.Constants.PLAYER_STATE_DEFAULT
-import com.example.playlistmaker.Constants.PLAYER_STATE_FINISH
-import com.example.playlistmaker.Constants.PLAYER_STATE_PAUSED
-import com.example.playlistmaker.Constants.PLAYER_STATE_PLAYING
-import com.example.playlistmaker.Constants.PLAYER_STATE_PREPARED
 import com.example.playlistmaker.domain.player.repository.PlayerRepository
 
 class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayerRepository {
+
+    companion object{
+        private const val PLAYER_STATE_DEFAULT = 0
+        private const val PLAYER_STATE_PREPARED = 1
+        private const val PLAYER_STATE_PLAYING = 2
+        private const val PLAYER_STATE_PAUSED = 3
+        private const val PLAYER_STATE_FINISH = 4
+    }
 
     private var player = PLAYER_STATE_DEFAULT
     private val handler = Handler(Looper.getMainLooper())
