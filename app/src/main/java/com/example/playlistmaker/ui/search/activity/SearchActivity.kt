@@ -27,7 +27,6 @@ class SearchActivity : AppCompatActivity() {
     var saveSearchText: String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
 
-    //private lateinit var viewModel: SearchViewModel
     private lateinit var searchBinding: ActivitySearchBinding
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var searchAdapter: SongsAdapter
@@ -37,10 +36,6 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        /*viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getSearchViewModelFactory()
-        )[SearchViewModel::class.java]*/
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(searchBinding.root)
 
