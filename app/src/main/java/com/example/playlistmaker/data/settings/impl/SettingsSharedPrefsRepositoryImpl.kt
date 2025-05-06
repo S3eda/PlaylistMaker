@@ -1,9 +1,8 @@
 package com.example.playlistmaker.data.settings.impl
 
-import android.app.UiModeManager.MODE_NIGHT_NO
-import android.app.UiModeManager.MODE_NIGHT_YES
 import android.content.SharedPreferences
-import com.example.playlistmaker.creator.Creator
+import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.Constants
 import com.example.playlistmaker.domain.settings.repository.SettingsSharedPrefsRepository
 
 class SettingsSharedPrefsRepositoryImpl(
@@ -11,21 +10,23 @@ class SettingsSharedPrefsRepositoryImpl(
 ): SettingsSharedPrefsRepository {
 
     override fun readSettings(): Boolean {
-        return sharedPrefs.getBoolean(Creator.THEME_KEY, false)
+        return sharedPrefs.getBoolean(Constants.THEME_KEY, false)
     }
 
     override fun writeSettings(darkTheme: Boolean) {
         sharedPrefs
             .edit()
-            .putBoolean(Creator.THEME_KEY, darkTheme)
+            .putBoolean(Constants.THEME_KEY, darkTheme)
             .apply()
     }
 
-    override fun switchTheme(darkThemeEnabled: Boolean): Int {
-        if (darkThemeEnabled) {
-            return MODE_NIGHT_YES
-        } else {
-            return MODE_NIGHT_NO
-        }
+    override fun switchTheme(darkThemeEnabled: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkThemeEnabled) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
     }
 }

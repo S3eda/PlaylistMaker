@@ -1,32 +1,20 @@
 package com.example.playlistmaker.ui.song_page.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ComponentActivity
-import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.player.PlayerRepositoryImpl
-import com.example.playlistmaker.data.player.PlayerRepositoryImpl.Companion
 import com.example.playlistmaker.databinding.ActivitySongPageBinding
-import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.ui.song_page.models.PlayerScreenState
 import com.example.playlistmaker.ui.song_page.models.Track
 import com.example.playlistmaker.ui.song_page.view_model.SongPageViewModel
-import com.google.gson.Gson
-import java.text.SimpleDateFormat
-import java.util.Locale
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SongPageActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivitySongPageBinding
-    private lateinit var playerViewModel: SongPageViewModel
+    val playerViewModel: SongPageViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +22,6 @@ class SongPageActivity : AppCompatActivity(){
 
         binding = ActivitySongPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        playerViewModel = ViewModelProvider(
-            this,
-            SongPageViewModel.getSongPageViewModelFactory()
-        )[SongPageViewModel::class.java]
 
         playerViewModel.preparePlayer()
 

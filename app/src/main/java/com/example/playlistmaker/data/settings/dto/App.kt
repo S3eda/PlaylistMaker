@@ -1,25 +1,28 @@
 package com.example.playlistmaker.data.settings.dto
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.settings.interactor.SettingsSharedPrefsInteractor
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext.startKoin
 
 class App:Application() {
 
     var darkTheme = false
-    lateinit var settingsInteractor: SettingsSharedPrefsInteractor
 
     override fun onCreate() {
         super.onCreate()
 
-        Creator.initContext(this)
-        settingsInteractor = Creator.provideSettingsSharedPrefsInteractor()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
 
+        val settingsInteractor: SettingsSharedPrefsInteractor by inject()
         darkTheme = settingsInteractor.readSettings()
-        switchTheme(darkTheme)
-    }
-
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(settingsInteractor.switchTheme(darkThemeEnabled))
+        settingsInteractor.switchTheme(darkTheme)
     }
 }

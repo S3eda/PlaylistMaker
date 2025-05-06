@@ -15,6 +15,7 @@ import com.example.playlistmaker.ui.search.model.SearchScreenState
 import com.example.playlistmaker.ui.search.presetation.SongsAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.song_page.activity.SongPageActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -26,19 +27,20 @@ class SearchActivity : AppCompatActivity() {
     var saveSearchText: String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
 
-    private lateinit var viewModel: SearchViewModel
+    //private lateinit var viewModel: SearchViewModel
     private lateinit var searchBinding: ActivitySearchBinding
     private lateinit var historyAdapter: SongsAdapter
     private lateinit var searchAdapter: SongsAdapter
+    private val viewModel: SearchViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        viewModel = ViewModelProvider(
+        /*viewModel = ViewModelProvider(
             this,
             SearchViewModel.getSearchViewModelFactory()
-        )[SearchViewModel::class.java]
+        )[SearchViewModel::class.java]*/
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(searchBinding.root)
 

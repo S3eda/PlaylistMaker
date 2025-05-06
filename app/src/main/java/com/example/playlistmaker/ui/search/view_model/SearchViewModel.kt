@@ -6,10 +6,8 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.Constants
+import com.example.playlistmaker.Constants.EMPTY_STRING
 import com.example.playlistmaker.domain.Consumer.Consumer
 import com.example.playlistmaker.domain.Consumer.ConsumerData
 import com.example.playlistmaker.domain.models.SongData
@@ -22,22 +20,8 @@ class SearchViewModel(
     private val searchUseCase: SearchSongUseCase
 ) : ViewModel() {
 
-    companion object {
-        fun getSearchViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    Creator.provideHistorySharedPrefsInteractor(),
-                    Creator.provideSearchUseCase()
-                )
-            }
-        }
-
-        private val SEARCH_REQUEST_TOKEN = Any()
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val EMPTY_STRING = ""
-    }
-
-    private var correctEditTextValue = ""
+    private var correctEditTextValue = EMPTY_STRING
+    private val SEARCH_REQUEST_TOKEN = Any()
 
     private val screenStateLiveData = MutableLiveData<SearchScreenState>(SearchScreenState.Default)
     fun getScreenStateLiveData(): LiveData<SearchScreenState> = screenStateLiveData
@@ -71,7 +55,7 @@ class SearchViewModel(
         screenStateLiveData.postValue(SearchScreenState.Default)
         screenStateLiveData.postValue(SearchScreenState.Loading)
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
+        val postTime = SystemClock.uptimeMillis() + Constants.SEARCH_DEBOUNCE_DELAY
         val searchRunnable = Runnable { searchTrack(changeText) }
         handler.postAtTime(
             searchRunnable,

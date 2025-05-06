@@ -15,7 +15,7 @@ class SettingsSharedPrefsInteractorImpl(
         repository.writeSettings(darkTheme)
     }
 
-   override fun switchTheme(darkThemeEnabled: Boolean): Int {
-        return repository.switchTheme(darkThemeEnabled)
+   override fun switchTheme(darkThemeEnabled: Boolean) {
+        repository.switchTheme(darkThemeEnabled)
     }
 }

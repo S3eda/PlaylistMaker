@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data.search.history.impl
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.Constants.HISTORY_KEY
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.search.history.repository.HistorySharedPrefsRepository
 import com.google.gson.Gson
@@ -10,7 +10,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
     HistorySharedPrefsRepository {
 
     override fun readSongHistory(): Array<SongData> {
-        val json = sharedPrefs.getString(Creator.HISTORY_KEY, null) ?: return emptyArray()
+        val json = sharedPrefs.getString(HISTORY_KEY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<SongData>::class.java)
     }
 
@@ -33,7 +33,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 subList.clear()
                 sharedPrefs.edit()
                     .clear()
-                    .putString(Creator.HISTORY_KEY, Gson().toJson(searchHistory))
+                    .putString(HISTORY_KEY, Gson().toJson(searchHistory))
                     .apply()
             }
 
@@ -44,7 +44,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.reverse()
                 sharedPrefs.edit()
                     .clear()
-                    .putString(Creator.HISTORY_KEY, Gson().toJson(searchHistory))
+                    .putString(HISTORY_KEY, Gson().toJson(searchHistory))
                     .apply()
             }
 
@@ -54,7 +54,7 @@ class HistorySharedPrefsRepositoryImpl(private val sharedPrefs: SharedPreference
                 searchHistory.reverse()
                 sharedPrefs.edit()
                     .clear()
-                    .putString(Creator.HISTORY_KEY, Gson().toJson(searchHistory))
+                    .putString(HISTORY_KEY, Gson().toJson(searchHistory))
                     .apply()
             }
         }
