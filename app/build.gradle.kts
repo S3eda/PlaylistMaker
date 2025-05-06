@@ -26,6 +26,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -54,4 +59,6 @@ dependencies {
     
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
+
+    implementation (libs.androidx.core.ktx.v190)
 }

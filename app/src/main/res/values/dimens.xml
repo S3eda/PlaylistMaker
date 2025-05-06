@@ -33,7 +33,7 @@
     <dimen name="recycler_view_songName_height">19dp</dimen>
     <dimen name="recycler_view_songName_width">250dp</dimen>
     <dimen name="recycler_view_songName_top">14dp</dimen>
-    <dimen name="recycler_view_songName_left">66dp</dimen>
+    <dimen name="recycler_view_songName_left">8dp</dimen>
     <dimen name="recycler_view_songName_textSize">16dp</dimen>
     <dimen name="recycler_view_image_square">45dp</dimen>
     <dimen name="recycler_view_image_top">8dp</dimen>

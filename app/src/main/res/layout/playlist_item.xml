@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/recycler_view_item_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
@@ -13,6 +14,8 @@
         android:layout_height="@dimen/recycler_view_image_square"
         android:layout_marginTop="@dimen/recycler_view_image_top"
         android:layout_marginLeft="@dimen/recycler_view_image_left"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:src="@drawable/info_allipse"/>
 
     <TextView
@@ -22,37 +25,55 @@
         android:layout_height="@dimen/recycler_view_songName_height"
         android:layout_marginLeft="@dimen/recycler_view_songName_left"
         android:layout_marginTop="@dimen/recycler_view_songName_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/artwork"
         tools:text="Fgggg"/>
 
-    <LinearLayout
-        android:layout_width="@dimen/recycler_view_info_width"
-        android:layout_height="@dimen/recycler_view_info_height"
+    <TextView
+        android:id="@+id/artist_name"
+        style="@style/track_info_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/recycler_view_info_top"
-        android:layout_marginLeft="@dimen/recycler_view_info_left">
-
-        <TextView
-            android:id="@+id/artist_name"
-            style="@style/track_info_style"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:drawableEnd="@drawable/info_allipse"
-            tools:text="Fggg"/>
-
-        <TextView
-            android:id="@+id/track_time"
-            style="@style/track_info_style"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/recycler_view_info_height"
-            tools:text="4:54"/>
-
-    </LinearLayout>
+        android:layout_marginLeft="@dimen/recycler_view_songName_left"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/artwork"
+        app:layout_constraintEnd_toEndOf="@id/track_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
+        android:maxLines="1"
+        tools:text="Fggii"/>
 
     <ImageView
+        android:id="@+id/info_allips"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/recycler_view_info_height"
+        android:src="@drawable/info_allipse"
+        app:layout_constraintStart_toEndOf="@id/artist_name"
+        app:layout_constraintTop_toTopOf="@id/artist_name"
+        app:layout_constraintEnd_toStartOf="@id/track_time" />
+
+    <TextView
+        android:id="@+id/track_time"
+        style="@style/track_info_style"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/recycler_view_info_height"
+        app:layout_constraintTop_toTopOf="@id/artist_name"
+        app:layout_constraintStart_toEndOf="@id/info_allips"
+        tools:text="4:54"/>
+
+
+    <ImageView
+        android:id="@+id/arrow"
         android:layout_width="@dimen/recycler_view_arrow_weight"
         android:layout_height="@dimen/recycler_view_arrow_height"
         android:layout_marginEnd="@dimen/recycler_view_choose_track_end"
         android:src="@drawable/choose_track"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/recycler_view_arrow_top"/>
+        android:layout_marginTop="@dimen/recycler_view_arrow_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
