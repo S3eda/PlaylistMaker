@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.SongData
@@ -16,7 +15,6 @@ import com.example.playlistmaker.ui.search.model.SearchScreenState
 import com.example.playlistmaker.ui.search.presetation.SongsAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.song_page.activity.SongPageActivity
-import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
 
@@ -164,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.listRefactoring(it)
             })
         searchBinding.searchRecyclerView.adapter = searchAdapter
-        viewModel.updateAdapter(searchAdapter, list.toMutableList())
+        searchAdapter.setItem(list)
         searchAdapter.setItem(list)
         searchBinding.searchRecyclerView.isVisible = true
     }
@@ -177,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.onClickAction()
             })
         searchBinding.historyRecyclerView.adapter = historyAdapter
-        viewModel.updateAdapter(historyAdapter, list.toMutableList())
+        historyAdapter.setItem(list)
         searchBinding.historyRecyclerView.isVisible = true
         searchBinding.clearHistoryButton.isVisible = true
         searchBinding.historyTitle.isVisible = true

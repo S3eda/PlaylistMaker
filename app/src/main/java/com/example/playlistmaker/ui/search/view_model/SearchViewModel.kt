@@ -16,7 +16,6 @@ import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.search.history.interactor.HistorySharedPrefsInteractor
 import com.example.playlistmaker.domain.search.useCase.SearchSongUseCase
 import com.example.playlistmaker.ui.search.model.SearchScreenState
-import com.example.playlistmaker.ui.search.presetation.SongsAdapter
 
 class SearchViewModel(
     private val searchHistoryInteractor: HistorySharedPrefsInteractor,
@@ -125,9 +124,5 @@ class SearchViewModel(
 
     fun onClickAction(){
         screenStateLiveData.postValue(SearchScreenState.HistoryContent(searchHistoryInteractor.readSongHistory().toMutableList()))
-    }
-
-    fun updateAdapter(adapter: SongsAdapter, list: MutableList<SongData>){
-        adapter.setItem(list)
     }
 }
