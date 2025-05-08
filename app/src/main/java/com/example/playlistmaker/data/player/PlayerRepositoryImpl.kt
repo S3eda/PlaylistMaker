@@ -5,19 +5,17 @@ import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.domain.player.repository.PlayerRepository
 
-class PlayerRepositoryImpl(): PlayerRepository {
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayerRepository {
 
     companion object{
-        private val PLAYER_STATE_DEFAULT = 0
-        private val PLAYER_STATE_PREPARED = 1
-        private val PLAYER_STATE_PLAYING = 2
-        private val PLAYER_STATE_PAUSED = 3
-        private val PLAYER_STATE_FINISH = 4
+        private const val PLAYER_STATE_DEFAULT = 0
+        private const val PLAYER_STATE_PREPARED = 1
+        private const val PLAYER_STATE_PLAYING = 2
+        private const val PLAYER_STATE_PAUSED = 3
+        private const val PLAYER_STATE_FINISH = 4
     }
 
     private var player = PLAYER_STATE_DEFAULT
-
-    private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
 
     override fun startPlayer(){

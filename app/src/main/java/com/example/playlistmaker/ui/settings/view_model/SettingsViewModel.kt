@@ -2,13 +2,9 @@ package com.example.playlistmaker.ui.settings.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.settings.interactor.SettingsSharedPrefsInteractor
 import com.example.playlistmaker.domain.sharing.interactor.SettingsExternalNavigationInteractor
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.data.util.SingleEventLiveData
+import com.example.playlistmaker.util.SingleEventLiveData
 
 class SettingsViewModel(
     private val externalNavigationInteractor: SettingsExternalNavigationInteractor,
@@ -25,6 +21,7 @@ class SettingsViewModel(
 
     fun changeTheme(isDarkTheme: Boolean) {
         settingsInteractor.writeSettings(isDarkTheme)
+        settingsInteractor.switchTheme(isDarkTheme)
     }
 
     fun share(link: String) {
@@ -37,16 +34,5 @@ class SettingsViewModel(
 
     fun userAgreement(link: String) {
         externalNavigationInteractor.userAgreements(link)
-    }
-
-    companion object {
-        fun getSettingsModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(
-                    Creator.provideSettingsExternalNavigationInteractor(),
-                    Creator.provideSettingsSharedPrefsInteractor()
-                )
-            }
-        }
     }
 }
