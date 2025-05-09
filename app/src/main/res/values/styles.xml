@@ -128,12 +128,11 @@
         <item name="android:textFontWeight">400</item>
     </style>
 
-    <style name="clearHistory_button_style" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+    <style name="clearHistory_new_playlist_button_style" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">@dimen/clearHistory_button_width</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:backgroundTint">@color/black</item>
         <item name="android:paddingHorizontal">0dp</item>
-        <item name="android:text">@string/clear_history</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/clearHistory_button_textSize</item>
         <item name="android:insetBottom">0dp</item>

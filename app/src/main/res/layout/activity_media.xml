@@ -5,6 +5,50 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.media.MediaActivity">
+    tools:context=".ui.media.activity.MediaActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mediateka_tool_bar"
+        style="@style/clearHistory_new_playlist_button_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/mediateka_toolBar_top" />
+
+    <ImageView
+        android:id="@+id/back_arrow"
+        style="@style/back_image"
+        android:layout_marginStart="@dimen/mediateka_backImage_margin"
+        android:layout_marginTop="@dimen/mediateka_backImage_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        style="@style/back_bar_text"
+        android:id="@+id/mediateka_title"
+        android:text="@string/media"
+        app:layout_constraintStart_toEndOf="@id/back_arrow"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mediateka_tabs_height"
+        app:layout_constraintTop_toBottomOf="@id/mediateka_tool_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabTextColor="@color/black"
+        app:tabRippleColor="@color/ever_gray"
+        app:tabIndicatorColor="@color/black"
+        app:tabIndicator="@drawable/indicator"
+        />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tabs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
