@@ -11,5 +11,4 @@
         <item name="colorControlActivated">@color/thumbOn</item>
         <item name="colorControlNormal">@color/thumbOff</item>
     </style>
-
 </resources>

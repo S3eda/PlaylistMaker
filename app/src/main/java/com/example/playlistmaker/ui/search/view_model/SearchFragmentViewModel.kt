@@ -11,14 +11,17 @@ import com.example.playlistmaker.domain.Consumer.ConsumerData
 import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.domain.search.history.interactor.HistorySharedPrefsInteractor
 import com.example.playlistmaker.domain.search.useCase.SearchSongUseCase
+import com.example.playlistmaker.ui.search.fragments.SearchScreenFragment
 import com.example.playlistmaker.ui.search.model.SearchScreenState
 
-class SearchViewModel(
+class SearchFragmentViewModel(
     private val searchHistoryInteractor: HistorySharedPrefsInteractor,
     private val searchUseCase: SearchSongUseCase
 ) : ViewModel() {
 
-    companion object{
+    companion object {
+        fun newInstance(): SearchScreenFragment = SearchScreenFragment()
+
         private const val EMPTY_STRING = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }

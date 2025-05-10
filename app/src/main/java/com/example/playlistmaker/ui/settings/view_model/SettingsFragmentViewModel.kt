@@ -6,7 +6,7 @@ import com.example.playlistmaker.domain.settings.interactor.SettingsSharedPrefsI
 import com.example.playlistmaker.domain.sharing.interactor.SettingsExternalNavigationInteractor
 import com.example.playlistmaker.util.SingleEventLiveData
 
-class SettingsViewModel(
+class SettingsFragmentViewModel (
     private val externalNavigationInteractor: SettingsExternalNavigationInteractor,
     private val settingsInteractor: SettingsSharedPrefsInteractor,
 ) : ViewModel(){
