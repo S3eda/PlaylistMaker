@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import com.example.playlistmaker.databinding.PlaylistsFragmentBinding
 import com.example.playlistmaker.ui.media.models.PlaylistsFragmentScreenState
 import com.example.playlistmaker.ui.media.view_model.PlaylistsViewModel
-import com.example.playlistmaker.util.BindingFragment
+import com.example.playlistmaker.binding.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: BindingFragment<PlaylistsFragmentBinding>() {

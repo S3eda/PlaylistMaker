@@ -1,4 +1,4 @@
-package com.example.playlistmaker.util
+package com.example.playlistmaker.binding
 
 import android.os.Bundle
 import android.view.LayoutInflater

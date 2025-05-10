@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import com.example.playlistmaker.databinding.FavoriteFragmentBinding
 import com.example.playlistmaker.ui.media.models.FavoritesFragmentScreenState
 import com.example.playlistmaker.ui.media.view_model.FavoriteViewModel
-import com.example.playlistmaker.util.BindingFragment
+import com.example.playlistmaker.binding.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment: BindingFragment<FavoriteFragmentBinding>() {
