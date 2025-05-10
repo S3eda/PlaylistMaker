@@ -22,7 +22,7 @@
             android:name=".ui.settings.activity.SettingsActivity"
             android:exported="false"/>
         <activity
-            android:name=".ui.media.MediaActivity"
+            android:name=".ui.media.activity.MediaActivity"
             android:exported="false"/>
         <activity
             android:name=".ui.song_page.activity.SongPageActivity"

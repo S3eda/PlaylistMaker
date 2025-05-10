@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.fragment)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,4 +64,10 @@ dependencies {
     implementation (libs.androidx.core.ktx.v190)
 
     implementation (libs.koin.android)
+
+    implementation (libs.androidx.fragment.ktx)
+
+    implementation (libs.androidx.viewpager2)
+
+    implementation (libs.material)
 }

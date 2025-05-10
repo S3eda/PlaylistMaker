@@ -74,4 +74,23 @@
     <dimen name="song_page_text_name_size">22sp</dimen>
     <dimen name="song_page_play_button_size">100dp</dimen>
     <dimen name="song_page_like_and_playlist_button_size">51dp</dimen>
+
+    <dimen name="playlist_fragment_start">24dp</dimen>
+    <dimen name="playlist_fragment_emptyImage_top">28dp</dimen>
+    <dimen name="playlist_fragment_emptyText_top">34dp</dimen>
+
+    <dimen name="text_size_11">11sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_19">19sp</dimen>
+    <dimen name="text_size_22">22sp</dimen>
+
+    <dimen name="mediateka_tab_sindicator_start_end">16dp</dimen>
+    <dimen name="mediateka_toolBar_top">56dp</dimen>
+    <dimen name="mediateka_backImage_margin">4dp</dimen>
+    <dimen name="mediateka_tabs_height">48dp</dimen>
+
+    <dimen name="favorite_fragment_start">24dp</dimen>
+    <dimen name="favorite_fragment_emptyImage_top">88dp</dimen>
+    <dimen name="favorite_fragment_emptyText_top">34dp</dimen>
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:start="@dimen/mediateka_tab_sindicator_start_end"
+        android:end="@dimen/mediateka_tab_sindicator_start_end">
+        <shape android:shape="rectangle">
+            <size
+                android:height="@dimen/cardview_default_radius" />
+        </shape>
+    </item>
+</layer-list>
