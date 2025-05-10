@@ -13,6 +13,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: BindingFragment<PlaylistsFragmentBinding>() {
 
+    companion object{
+        fun newInstance() : PlaylistsFragment = PlaylistsFragment()
+    }
+
     private val viewModel: PlaylistsViewModel by viewModel()
 
     override fun createBinding(

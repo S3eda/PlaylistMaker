@@ -8,11 +8,16 @@ import com.example.playlistmaker.ui.media.fragments.PlaylistsFragment
 
 class MediatekaPageAdapter(hostActivity: MediaActivity): FragmentStateAdapter(hostActivity){
 
+    private val fragmentsList = listOf<Fragment>(
+        FavoriteTracksFragment.newInstance(),
+        PlaylistsFragment.newInstance()
+    )
+
     override fun getItemCount(): Int {
-        return 2
+        return fragmentsList.size
     }
 
     override fun createFragment(position: Int): Fragment {
-        return if (position == 0) FavoriteTracksFragment() else PlaylistsFragment()
+        return fragmentsList[position]
     }
 }

@@ -13,6 +13,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment: BindingFragment<FavoriteFragmentBinding>() {
 
+    companion object{
+        fun newInstance() : FavoriteTracksFragment = FavoriteTracksFragment()
+    }
+
     private val viewModel: FavoriteViewModel by viewModel()
 
     override fun createBinding(
