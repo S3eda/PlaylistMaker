@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:layout = "@layout/search_fragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/search_bar"
@@ -14,18 +15,10 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="56dp" />
 
-    <ImageView
-        android:id="@+id/back_search"
-        style="@style/back_image"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
     <TextView
         style="@style/back_bar_text"
         android:text="@string/search"
-        app:layout_constraintStart_toEndOf="@id/back_search"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -165,16 +158,16 @@
         app:layout_constraintTop_toBottomOf="@id/history_recyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rbottom_search_line"
+        app:layout_constraintBottom_toTopOf="@id/bottom_search_line"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.05"/>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/rbottom_search_line"
+        android:id="@+id/bottom_search_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="16dp"/>
+        app:layout_constraintGuide_end="56dp" />
 
 
     <ImageView
