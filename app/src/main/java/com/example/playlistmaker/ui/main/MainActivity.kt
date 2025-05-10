@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import com.example.playlistmaker.R
 import com.example.playlistmaker.ui.media.activity.MediaActivity
-import com.example.playlistmaker.ui.search.activity.SearchActivity
+import com.example.playlistmaker.ui.search.fragments.SearchScreenFragment
 import com.example.playlistmaker.ui.settings.activity.SettingsActivity
+import com.example.playlistmaker.ui.settings.fragment.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,14 +18,16 @@ class MainActivity : AppCompatActivity() {
 
         val search = findViewById<Button>(R.id.search_button)
         search.setOnClickListener {
-            val searchIntent = Intent(this, SearchActivity::class.java)
-            startActivity(searchIntent)
+            supportFragmentManager.commit {
+                add(R.id.main_fragment, SearchScreenFragment.newInstance())
+            }
         }
 
         val media = findViewById<Button>(R.id.media_button)
         media.setOnClickListener {
-            val mediaIntent = Intent(this, MediaActivity::class.java)
-            startActivity(mediaIntent)
+            supportFragmentManager.commit {
+                add(R.id.main_fragment, SettingsFragment.newInstance())
+            }
         }
 
         val settings = findViewById<Button>(R.id.settings_button)

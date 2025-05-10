@@ -6,6 +6,11 @@
     android:background="@color/blue"
     android:orientation="vertical">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/main_left_line"
         android:layout_width="wrap_content"
