@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.media.activity.MediaActivity">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/mediateka_tool_bar"
@@ -49,4 +48,3 @@
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

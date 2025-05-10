@@ -18,7 +18,7 @@ class SongPageActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_song_page)
+        setContentView(R.layout.activity_player)
 
         binding = ActivitySongPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
