@@ -28,8 +28,9 @@ class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
         const val SOME_TEXT = ""
     }
 
-    private lateinit var historyAdapter: SongsAdapter
     private lateinit var searchAdapter: SongsAdapter
+    private lateinit var historyAdapter: SongsAdapter
+
     var saveSearchText: String = SOME_TEXT
     private var songsList = mutableListOf<SongData>()
 
@@ -44,6 +45,17 @@ class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        historyAdapter = SongsAdapter(
+            onClickAction = {
+                openTrack()
+                viewModel.addTrackToHistory(it)
+            })
+        searchAdapter = SongsAdapter(
+            onClickAction = {
+                openTrack()
+                viewModel.addTrackToHistory(it)
+            })
 
         viewModel.onCreate()
 
@@ -67,21 +79,19 @@ class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
         }
 
         binding.searchText.addTextChangedListener(
-            beforeTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
-            },
 
             afterTextChanged = { s: Editable? ->
                 viewModel.editTextChange(s.toString())
             },
 
-            onTextChanged = { s: CharSequence?, p1: Int, p2: Int, p3: Int ->
+            onTextChanged = { s: CharSequence?, _: Int, _: Int, _: Int ->
                 showDefaultState()
                 viewModel.getEditTextValue(s.toString())
                 binding.clearButton.isVisible = !s.isNullOrEmpty()
             }
         )
 
-        viewModel.getScreenStateLiveData().observe(this) { screenState ->
+        viewModel.getScreenStateLiveData().observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is SearchScreenState.Default -> {
                     showDefaultState()
@@ -154,22 +164,22 @@ class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
     }
 
     private fun showSearchContent(list: List<SongData>) {
-        searchAdapter = SongsAdapter(
+       /* searchAdapter = SongsAdapter(
             onClickAction = {
                 openTrack()
                 viewModel.addTrackToHistory(it)
-            })
+            })*/
         binding.searchRecyclerView.adapter = searchAdapter
         searchAdapter.setItem(list)
         binding.searchRecyclerView.isVisible = true
     }
 
     private fun showHistoryContent(list: List<SongData>) {
-        historyAdapter = SongsAdapter(
+        /*historyAdapter = SongsAdapter(
             onClickAction = {
                 openTrack()
                 viewModel.addTrackToHistory(it)
-            })
+            })*/
         binding.historyRecyclerView.adapter = historyAdapter
         historyAdapter.setItem(list)
         binding.historyRecyclerView.isVisible = true
