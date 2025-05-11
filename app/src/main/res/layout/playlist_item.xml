@@ -44,7 +44,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
         android:maxLines="1"
-        tools:text="Fggii"/>
+        tools:text="Fggiuuuuuuuuu"/>
 
     <ImageView
         android:id="@+id/info_allips"

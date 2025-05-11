@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/mediatekaFragment">
+
+    <fragment
+        android:id="@+id/mediatekaFragment"
+        android:name="com.example.playlistmaker.ui.media.fragments.MediatekaFragment"
+        android:label="MediatekaFragment"
+        tools:layout="@layout/media_fragment"/>
+    <fragment
+        android:id="@+id/searchScreenFragment"
+        android:name="com.example.playlistmaker.ui.search.fragments.SearchScreenFragment"
+        android:label="SearchScreenFragment"
+        tools:layout="@layout/search_fragment">
+        <action
+            android:id="@+id/action_searchScreenFragment_to_songPageActivity2"
+            app:destination="@id/songPageActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.playlistmaker.ui.settings.fragment.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/settings_fragment"/>
+    <activity
+        android:id="@+id/songPageActivity"
+        android:name="com.example.playlistmaker.ui.song_page.activity.SongPageActivity"
+        android:label="SongPageActivity"
+        tools:layout="@layout/activity_player"/>
+    <fragment
+        android:id="@+id/favoriteTracksFragment"
+        android:name="com.example.playlistmaker.ui.media.fragments.FavoriteTracksFragment"
+        android:label="FavoriteTracksFragment"
+        tools:layout="@layout/favorite_fragment"/>
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="com.example.playlistmaker.ui.media.fragments.PlaylistsFragment"
+        android:label="PlaylistsFragment"
+        tools:layout="@layout/playlists_fragment"/>
+</navigation>
