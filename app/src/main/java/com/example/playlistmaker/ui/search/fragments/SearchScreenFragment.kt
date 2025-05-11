@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.binding.BindingFragment
 import com.example.playlistmaker.databinding.SearchFragmentBinding
@@ -164,22 +165,12 @@ class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
     }
 
     private fun showSearchContent(list: List<SongData>) {
-       /* searchAdapter = SongsAdapter(
-            onClickAction = {
-                openTrack()
-                viewModel.addTrackToHistory(it)
-            })*/
         binding.searchRecyclerView.adapter = searchAdapter
         searchAdapter.setItem(list)
         binding.searchRecyclerView.isVisible = true
     }
 
     private fun showHistoryContent(list: List<SongData>) {
-        /*historyAdapter = SongsAdapter(
-            onClickAction = {
-                openTrack()
-                viewModel.addTrackToHistory(it)
-            })*/
         binding.historyRecyclerView.adapter = historyAdapter
         historyAdapter.setItem(list)
         binding.historyRecyclerView.isVisible = true
@@ -194,9 +185,7 @@ class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
     }
 
     private fun openTrack() {
-        val songPageIntent =
-            Intent(requireActivity(), SongPageActivity::class.java)
-        requireActivity().startActivity(songPageIntent)
+        findNavController().navigate(R.id.action_searchScreenFragment_to_songPageActivity2)
     }
 }
 
