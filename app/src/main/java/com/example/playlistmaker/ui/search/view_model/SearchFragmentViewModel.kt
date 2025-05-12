@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.search.view_model
 
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -97,6 +98,9 @@ class SearchFragmentViewModel(
 
     fun addTrackToHistory(track: SongData) {
         searchHistoryInteractor.addSongToList(track)
+        screenStateLiveData.postValue(SearchScreenState.HistoryContent(
+            searchHistoryInteractor.readSongHistory().toList()
+        ))
     }
 
     fun getEditTextValue(string: String) {
