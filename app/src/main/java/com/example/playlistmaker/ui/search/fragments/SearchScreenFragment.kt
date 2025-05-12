@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -17,7 +16,6 @@ import com.example.playlistmaker.domain.models.SongData
 import com.example.playlistmaker.ui.search.model.SearchScreenState
 import com.example.playlistmaker.ui.search.presetation.SongsAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchFragmentViewModel
-import com.example.playlistmaker.ui.song_page.activity.SongPageActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchScreenFragment : BindingFragment<SearchFragmentBinding>() {
